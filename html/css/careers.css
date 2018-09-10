@@ -1,0 +1,57 @@
+.row .text-wrapper {
+  width: 100%;
+}
+
+.row .text-wrapper .title {
+  text-align: center;
+}
+
+.row .text-wrapper .sub-title {
+  text-align: center;
+}
+
+.row.banner {
+  height: 400px;
+}
+
+.row.job .inner-wrapper {
+  padding: 50px 0; 
+  border-bottom: 1px solid #ccc;
+}
+
+.row.job:last-of-type .inner-wrapper {
+  border-bottom: none;
+}
+
+.row.job .header {
+  align-items: start;
+  flex: 1 1 40%;
+}
+
+.row.job .content {
+  flex: 1 1 60%;
+}
+
+.row.job .content .title {
+  font-size: 18px;
+}
+
+.row.job img {
+  margin: 5px 10px;
+}
+
+.row.job .title {
+  color: var(--blue);
+  font-family: 'Oswald';
+  font-size: 22px;
+  text-align: left;
+  margin: 5px 10px;
+}
+
+.row.job .sub-title {
+  color: var(--grey);
+  line-height: 27px;
+  font-size: 14px;
+  font-family: 'Roboto';
+  margin: 5px 10px;
+}

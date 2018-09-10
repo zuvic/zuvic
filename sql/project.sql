@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS project_site;
+
+CREATE TABLE project_site ( project_site_id INT(10) unsigned not null auto_increment, project_site_name varchar(50) not null, primary key (project_site_id) );
+CREATE TABLE project_content ( project_content_id INT(10) unsigned not null, project_content_site_id INT(10) unsigned not null, project_content_type varchar(20) not null, project_content_value mediumtext not null, primary key (project_content_id) );
+CREATE TABLE project_related ( project_related_id INT(10) unsigned not null auto_increment, project_related_site_id INT(10) unsigned not null, project_related_survey INT(2), project_related_planning INT(2), project_related_civil INT(2), project_related_transport INT(2), project_related_structural INT(2), project_related_bridges INT(2), project_related_utility INT(2), project_related_water INT(2), project_related_const INT(2), project_related_perm INT(2), project_related_enviro INT(2), primary key (project_related_id) );

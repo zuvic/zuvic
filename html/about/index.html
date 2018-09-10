@@ -1,0 +1,873 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <title>Zuvic</title>
+    <meta name="description" content="Zuvic">
+    <meta name="author" content="Michael Zapatka">
+    <link rel="icon" type="image/svg" href="/images/favicon.svg?v=2">
+
+    <link rel="stylesheet" href="/css/masterPage.css">
+    <link rel="stylesheet" href="/css/remodal.css">
+    <link rel="stylesheet" href="/css/remodal-default-theme.css">
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+    <script src="/js/master.js"></script>
+
+    <!-- <link rel="stylesheet" href="/css/styles.css?v=1.0"> -->
+    <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="/css/swiper.min.css">
+
+    <!--[if lt IE 9]>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+    <![endif]-->
+    <style>
+        html,
+        body {
+            background: #f7f7f7;
+        }
+
+        .mid-break {
+            font-size: 30px;
+            text-align: center;
+            color: var(--grey);
+            padding: 35px;
+            border-top: 6px solid #ccc;
+            border-bottom: 6px solid var(--red);
+        }
+
+        .large-dot {
+            color: var(--red);
+        }
+
+        .mid-section {
+            background: #f7f7f7;
+            justify-content: flex-start;
+            display: flex;
+            color: var(--blue);
+            line-height: 25px;
+            height: 3040px;
+            padding: 5% 0 0 0;
+        }
+
+        .mid-section .img-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50%;
+            overflow: hidden;
+        }
+
+        .mid-section .header {
+            font-size: 36px;
+            font-weight: 800;
+            font-family: 'Oswald';
+            cursor: pointer;
+            padding-bottom: 3%;
+        }
+
+        .mid-section .content-container {
+            width: 100%;
+    position: relative;
+    height: 0;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    margin-top: 142px;
+        }
+
+        .mid-section .inner-content {
+            width: 1020px;
+            margin: 0 auto;
+            display: grid;
+            /* align-items: center; */
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            overflow: hidden;
+            background: #f7f7f7;
+        }
+
+        .mid-section .sub-header {
+            color: #989898;
+            line-height: 19px;
+            font-size: 14px;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 20px 0px 0px 0px;
+            color: var(--blue);
+            font-weight: 600;
+        }
+
+        li {
+            padding: 10px 0 10px 0;
+            line-height: 14px;
+        }
+
+        #lower-section {
+            width: 100%;
+            background: #fff;
+            /* background: linear-gradient(0deg, rgba(29, 61, 96, 0.83), rgba(24, 56, 92, 0.87)), url(images/parallax_1.jpg); */
+            background-size: cover;
+            color: var(--blue);
+            margin-top: 40px;
+            margin-bottom: 40px;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            text-align: center;
+            justify-content: center;
+        }
+
+        #lower-section .header {
+            font-size: 30px;
+            width: 100%;
+            font-weight: 600;
+            text-align: center;
+            font-family: 'Oswald';
+        }
+
+        #lower-section .sub-section {
+            font-style: italic;
+            font-size: 12px;
+            display: inline-flex;
+            width: 1020px;
+            height: 100%;
+            justify-content: center;
+        }
+
+        #lower-section .sub-section .quote {
+            width: 100%;
+            margin-left: 30px;
+            line-height: 18px;
+            margin-top: 10px;
+            border-right: 1px solid #f1f1f1;
+        }
+
+        #lower-section .sub-section .quote .quote-content {
+            padding-right: 30px;
+        }
+
+        #lower-section .sub-section .quote:first-child {
+            margin-right: 0px !important;
+            margin-left: 0px !important;
+        }
+
+        #lower-section .sub-section .quote:first-child .quote-content {
+            padding-right: 30px !important;
+        }
+
+        #lower-section .sub-section .quote:last-child {
+            margin-left: 30px !important;
+            border-right: none !important;
+        }
+
+        #lower-section-2 {
+            width: 100%;
+            background: linear-gradient(to right, rgba(24, 57, 93, 0.87) 0%, rgba(15, 75, 140, 0.86) 100%), url('images/footer.jpg');
+            color: #fff;
+            text-align: center;
+            padding-bottom: 40px;
+            overflow: hidden;
+            height: 521px;
+        }
+
+        #lower-section-2 img {
+            -webkit-filter: brightness(3);
+            filter: brightness(3);
+            padding-top: 26px;
+            padding-right: 20px;
+        }
+
+        #lower-section-2 .header {
+            font-size: 30px;
+            font-weight: 600;
+            width: 100%;
+            text-align: center;
+            font-family: 'Oswald';
+            padding: 20px 0px 20px 0px;
+            color: #fff;
+        }
+
+        .slider-mini-header {
+            font-size: 30px;
+            width: 100%;
+            text-align: center;
+            padding-top: 15px;
+            color: var(--blue);
+        }
+
+        #lower-section-2 .sub-section {
+            justify-content: center;
+            display: inline-block;
+            border-right: 1px solid #5a6c82;
+            height: 436px;
+        }
+
+        #lower-section-2 .sub-section:last-child {
+            border-right: none;
+        }
+
+        #contact-section {
+            background: #f7f7f7;
+            padding: 0 0 50px 0;
+        }
+
+        .red-large {
+            color: var(--red);
+            font-size: 30px;
+            font-style: initial;
+            padding-left: 50px;
+        }
+
+        .grid {
+            text-align: center;
+            display: flex;
+            margin-left: 80px;
+            margin-right: 80px;
+            padding-bottom: 41px;
+            width: 317px;
+            font-weight: 800;
+            padding-top: 5px;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #5a6c82;
+            transition: all 0.5s ease-in-out;
+            -webkit-transition: all 0.5s ease-in-out;
+            -moz-transition: all 0.5s ease-in-out;
+            -o-transition: all 0.5s ease-in-out;
+            cursor: pointer;
+        }
+
+        .grid:hover {
+            border-bottom: 5px solid #fff !important;
+        }
+
+        .grid:hover+.grid {
+            padding-top: 0px;
+        }
+
+        .grid:last-child {
+            border: none;
+        }
+
+        .grid img {
+            height: 40px;
+        }
+
+        ul {
+            display: inline-block;
+        }
+
+        .swiper-button-prev,
+        .swiper-button-next {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2027%2044'%3E%3Cpath%20d%3D'M0%2C22L22%2C0l2.1%2C2.1L4.2%2C22l19.9%2C19.9L22%2C44L0%2C22L0%2C22L0%2C22z'%20fill%3D'%23cccccc'%2F%3E%3C%2Fsvg%3E") !important;
+        }
+
+        .quote {
+            font-size: 14px;
+            text-align: center;
+            bottom: 0;
+            position: relative;
+            height: 277px;
+        }
+
+        .author {
+            text-align: center;
+            padding-top: 15px;
+            font-size: 13px;
+            color: var(--blue);
+            font-weight: 600;
+            font-style: normal;
+            bottom: 0;
+        }
+
+        .quote-content {
+            bottom: 0;
+            position: absolute;
+            color: #3e3e3e;
+        }
+
+        .large-diamond img {
+            margin: 10px 0 0 0;
+            height: 30px;
+        }
+
+        #contact-button {
+            text-transform: uppercase;
+            font-size: 12px;
+            background: var(--blue);
+            color: #fff;
+            padding: 5px 14px;
+            border-radius: 3px;
+            cursor: pointer;
+            right: 40px;
+            position: absolute;
+            transition: all 0.1s ease-in-out;
+            -webkit-transition: all 0.1s ease-in-out;
+            -moz-transition: all 0.1s ease-in-out;
+            -o-transition: all 0.1s ease-in-out;
+        }
+
+        .grid-element-1 {
+            height: 200px;
+            display: inline-block;
+            background: linear-gradient(0deg, rgba(255, 0, 150, 0.3), rgba(255, 0, 150, 0.3)), url(images/home_1.jpg);
+            background-position: 50% 50%;
+            width: 400px;
+        }
+
+        .grid-element-2 {
+            height: 200px;
+            display: inline-block;
+            background: linear-gradient(0deg, rgba(255, 0, 150, 0.3), rgba(255, 0, 150, 0.3)), url(images/home_2.jpg);
+            background-position: 50% 50%;
+            width: 400px;
+        }
+
+        .hr {
+            width: 33%;
+            height: 0px;
+            border-bottom: 4px solid #a7a7a7;
+            padding-left: 0%;
+        }
+
+        .big-quote {
+            /* font-size: 30px; */
+        }
+
+        .principals {
+            padding: 20px;
+            display: inline-block;
+            font-weight: 800;
+            font-size: 13px;
+            width: 29%;
+        }
+
+        .page-header {
+            font-size: 113px;
+    font-family: Oswald;
+    font-weight: 900;
+    height: 93px;
+    color: var(--red);
+    display: inline-block;
+    margin-bottom: 30px;
+        }
+
+        .page-header-small {
+            font-size: 42px;
+    font-weight: 300;
+    top: 13px;
+    position: relative;
+    color: #777;
+        }
+
+        .page-sub-header {
+            width: 76%;
+    /* font-family: Oswald; */
+    margin-left: 20px;
+    color: #777;
+    font-size: 17px;
+    /* text-transform: lowercase; */
+    position: relative;
+    top: 14px;
+    line-height: 27px;
+    /* font-weight: bold; */
+    text-align: left;
+    display: inline-block;
+        }
+
+        .mid-content {
+            width: 50%;
+            text-align: center;
+            font-family: Oswald;
+        }
+
+        .mid-content.full {
+            width: 100%;
+        }
+
+        .mid-content .underline {
+            width: 50%;
+            border-bottom: 1px solid #ccc;
+            margin: 0 auto;
+            background: none;
+            margin-top: 10px;
+        }
+
+        .mid-wrapper {
+            display: inline-flex;
+            margin: 50px 0 50px 0;
+        }
+
+        .mid-content .text {
+            font-family: Roboto;
+            font-size: 14px;
+            margin: 10px auto;
+            width: 94%;
+            text-align: left;
+        }
+
+        .mid-content.client-list .text {
+            text-align: left;
+            width: 100%;
+        }
+
+        .principal {
+            display: inline-block;
+            margin: 20px;
+            font-size: 21px;
+        }
+
+        .principal .sub-title {
+            font-size: 15px;
+        }
+
+        .mid-content .title {
+            font-size: 30px;
+            font-weight: 500;
+        }
+
+        .principal img {
+            height: 303px;
+        }
+
+        .principal.list {
+            font-size: 12px;
+            display: inline-table;
+            width: 29%;
+        }
+
+        .modal-button {
+            font-size: 14px;
+            background: #18395d;
+            color: #fff;
+            margin-top: 19px;
+            border-radius: 3px;
+            padding: 7px;
+        }
+
+        #map {
+            display: inline-block;
+            height: 300px;
+            width: 300px;
+        }
+
+        .contact-wrapper {
+            display: inline-block;
+            width: 300px;
+        }
+
+        .bio {
+            display: flex;
+            height: auto;
+            flex-direction: row;
+        }
+
+        .bio.left {
+            height: fit-content;
+            width: auto;
+            margin: 0 35px 0 0;
+        }
+
+        .bio.left img {
+
+        }
+
+        .bio.right {
+            flex-direction: column;
+            text-align: left;
+            font-size: 15px;
+            line-height: 2em;
+        }
+
+        .bio-header {
+            font-size: 30px;
+            display: block;
+            font-family: 'Oswald';
+        }
+
+        @media all and (max-width: 900px) {
+            .bio {
+                display: flex;
+                height: auto;
+                flex-direction: column;
+            }
+
+            .bio.left {
+                height: fit-content;
+                width: fit-content;
+                margin: 30px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Nav -->
+    <div class="nav fixed">
+            <div class="navwrapper">
+                <div class="links" id="logo_wrapper">
+                    <a href="/"><img class="logo" src="/images/logo_vector.svg">
+                        </img>
+                        <img class="logo_small" src="/images/logo_vector_small.svg">
+                        </img>
+                    </a>
+                </div>
+                <div class="menu">
+                    <!-- <div class="links service-link"><a href="./services.html">Services</a>
+                        <div class="underline"></div>
+                    </div> -->
+                    <div class="links"><a href="/#servicesnav">Services</a>
+                        <div class="underline"></div>
+                    </div>
+                    <div class="links"><a href="/news/">News</a>
+                        <div class="underline"></div>
+                    </div>
+                    <div class="links"><a href="/careers/">Careers</a>
+                        <div class="underline"></div>
+                    </div>
+                    <div class="links"><a href="/about/">About</a>
+                        <div class="underline"></div>
+                    </div>
+                </div>
+                <div id="contact-button"><a href="#modal">Contact Us</a></div>
+            </div>
+        </div>
+
+    <div class="remodal-bg">
+        <div id="inner-wrapper">
+            <div class="mid-section">
+                <div class="inner-content">
+                    <div class="content-container">
+                        <div class="page-header">30<br>
+                            <span class="page-header-small">years</span>
+                        </div>
+                        <br>
+                        <div class="page-sub-header">For over 30 years, Zuvic Carr has provided civil, environmental, and transportation design services throughout Connecticut and New England.</div>
+                    </div>
+                    <div class="mid-wrapper" style="margin-top: 256px">
+                        <div class="mid-content">
+                            <div class="title">WHO WE ARE</div>
+                            <div class="underline"></div>
+                            <div class="text">
+                                Zuvic Carr is a civil and environmental engineering design firm led by Marici Zuvic, Robert Carr, Tomek Grajewski, Miroslav Grajewski, Victoria Man and Galen Semprebon.  
+                                Zuvic Carr is based in Rocky Hill, Connecticut, 10 min south of Hartford, at the state’s capital. 
+                                <br><br>
+                                Our professional staff and comprehensive slate of services allows us to respond to our clients’ needs quickly while keeping the project on schedule and on budget.  
+                                Because of our size and company structure, we are able to provide customer focused and cost-effective consulting services. 
+                            </div>
+                        </div>
+                        <div class="mid-content">
+                            <div class="title">PHILOSOPHY</div>
+                            <div class="underline"></div>
+                            <div class="text">
+                                    Our organization is passionately committed to the pursuit of a better world through positive change. 
+                                    We embrace your visions as our own and partner with you to develop better ideas that are smarter, more efficient, and innovative. 
+                                    We work closely with the communities in which we serve to ensure that our solutions optimize environmental protection, economic prosperity, social justice, and cultural vibrancy. We want their businesses, ecosystems, and communities to thrive, both now and into the future.  
+                                    Our people are passionate about our corporate purpose and values. We believe in long-term relationships with our partners, and are committed to our clients’ lasting success.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mid-wrapper">
+                        <div class="mid-content full">
+                            <div class="title">PRINCIPALS</div>
+                            <div class="underline" style="width:30%"></div>
+                            <div class="text" style="width: 91%">
+                                Zuvic Carr understands that combining technical skill and innovative thinking with thorough project research and planning
+                                is essential for project success. We are devoted to creating the best solutions through our
+                                technical resourcefulness, our pursuit of excellence, and our responsiveness to each client's
+                                needs.
+                            </div>
+
+                            <div class="principal-wrapper">
+                                <div class="principal">
+                                    <img src="/images/marici.jpg">
+                                    <br>Marici Zuvic
+                                    <br>
+                                    <span class="sub-title">PRESIDENT</span>
+                                    <br>
+                                    <div class="modal-button">
+                                        <a href="#marici-modal">READ BIO</a>
+                                    </div>
+                                </div>
+                                <div class="principal">
+                                    <img src="/images/bob.jpg">
+                                    <br>Robert J. Carr, P.E., LEP
+                                    <br>
+                                    <span class="sub-title">CHIEF OPERATING OFFICER</span>
+                                    <br>
+                                    <div class="modal-button">
+                                        <a href="#bob-modal">READ BIO</a>
+                                    </div>
+                                </div>
+                                <div class="principal">
+                                    <img src="/images/tomek.jpg">
+                                    <br>Tomek Grajewski, P.E.
+                                    <br>
+                                    <span class="sub-title">VICE PRESIDENT</span>
+                                    <br>
+                                    <div class="modal-button">
+                                        <a href="#tomek-modal">READ BIO</a>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="principal">
+                                    <img src="/images/miroslav.jpg">
+                                    <br>Miroslav Grajewski, P.E.
+                                    <br>
+                                    <span class="sub-title">VICE PRESIDENT</span>
+                                    <br>
+                                    <div class="modal-button">
+                                        <a href="#miroslav-modal">READ BIO</a>
+                                    </div>
+                                </div>
+                                <div class="principal">
+                                    <img src="/images/head_tory_man.jpg">
+                                    <br>Victoria L. Man, LEP
+                                    <br>
+                                    <span class="sub-title">DIRECTOR OF ENVIRONMENTAL SERVICES</span>
+                                    <br>
+                                    <div class="modal-button">
+                                        <a href="#victoria-modal">READ BIO</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mid-wrapper">
+                        <div class="mid-content client-list full">
+                            <div class="title">CLIENTS</div>
+                            <div class="underline" style="width:30%"></div>
+                            <div class="text">
+                                <div class="principal list">
+                                    AECOM<br>
+                                    Amenta Emma Architects<br>
+                                    ARCADIS<br>
+                                    Arrow Concrete Products<br>
+                                    Automated Waste Disposal<br>
+                                    BETA Group<br>
+                                    Black & Veach<br>
+                                    Bombardier<br>
+                                    Bradley International Airport<br>
+                                    Buckeye Partners<br>
+                                    Capital Studio Architects<br>
+                                    Capitol Distrcit Energy Center Cogenerational Assoc.<br>
+                                    Capitol Region Education Council<br>
+                                    CBS Radio<br>
+                                    CDM Smith <br>
+                                    CIGNA<br>
+                                    Citigroup<br>
+                                    City of Norwalk, CT<br>
+                                    City of Stamford, CT<br>
+                                    City of Waterbury, CT<br>
+                                    Coca Cola Refreshments<br>
+                                    Connecticut Airport Authority<br>
+                                    CRD Maguire<br>
+                                    CT Air National Guard<br>
+                                    CT Department of Construction Services<br>
+                                    CT Department of Public Works<br>
+                                    CT Department of Transportation<br>
+                                    CT River Academy<br>
+                                    Department of Army<br>
+                                    Department of Defense <br>
+                                    Design Group Facility Solutions <br>
+                                    Desman Architects<br>
+                                </div>
+                                <div class="principal list">
+                                        Downes Construction<br>
+                                        Eastern Connecticut State University<br>
+                                        Fletcher & Thompson<br>
+                                        Fuss & O'Neill, Inc.<br>
+                                        G&G Beverage Distributors<br>
+                                        Goodwin College<br>
+                                        Greater New Haven Water Pollution Control Authority<br>
+                                        Hartford Brainard Airport<br>
+                                        Hartford Water Pollution Control Authority<br>
+                                        Hazen & Sawyer<br>
+                                        Highville Charter School<br>
+                                        Homeland Towers, LLC<br>
+                                        Hudson Insurance Group<br>
+                                        Hull Street Energy<br>
+                                        Jacobs<br>
+                                        Jennings Oil <br>
+                                        Kaman Aerospace<br>
+                                        Kenny Construction<br>
+                                        Kleinfelder<br>
+                                        Lamar Adversiting Company<br>
+                                        Learjet Inc.<br>
+                                        LifeStar<br>
+                                        Manhattan Construction<br>
+                                        Maxim Power Corporation<br>
+                                        Metropolitan District Commision<br>
+                                        MWH<br>
+                                        Navy Federal Credit Union<br>
+                                        NewAlliance Bank<br>
+                                        Nosal Builders<br>
+                                        Nutmeg State Federal Credit Union<br>
+                                        O&G Industries, Inc.<br>
+                                        Pillinger, Miller & Tarallo, LLP<br>
+                                        Polar Corporation<br>
+                                </div>
+                                <div class="principal list">
+                                        PureEnergy Operating Services<br>
+                                        Richter & Cegan<br> 
+                                        Rocky Hill Housing Authority<br>
+                                        Rocky Hill Water Pollution Control Authority<br>
+                                        Sacyr Global<br>
+                                        Satellite Tool Machine Compnay<br>
+                                        Schüco USA<br>
+                                        Society of Industrial and Office Realtors<br>
+                                        Southern Connecticut University<br>
+                                        Sprague Energy<br>
+                                        Stantec<br>
+                                        State Farm Insurance<br>
+                                        Stone Academy<br>
+                                        Svigals Architects<br>
+                                        Taylor Energy<br>
+                                        Town of Berlin, CT<br>
+                                        Town of Brookfield, CT<br>
+                                        Town of Rocky Hill, CT<br>
+                                        Town of Simsbury, CT<br>
+                                        Town of South Windsor, CT<br>
+                                        Town of West Haven, CT<br>
+                                        Town of Windsor Locks, CT<br>
+                                        Town of Woodbury, CT<br>
+                                        Travelers Insurance Company<br>
+                                        Traylor Brothers Construction<br>
+                                        True Blue Environmental<br>
+                                        True World Foods<br>
+                                        United Parcel Service <br>
+                                        United Steel<br>
+                                        University of Connecticut<br>
+                                        Updike, Kelly & Spellacy, PC<br>
+                                        Woodard & Curran<br>
+                                        Wright Pierce<br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="contact-section">
+                <div class="header">Need a solution?</div>
+                <button type="button">Let's Connect.</button>
+            </div>
+
+        </div>
+        <div id="footer">
+            <img src="/images/logo_vector_white.svg">
+            <img src="/images/social.svg" style="height: 28px; top:50%; float: right; margin-right:15%">
+            <!-- <div class="info">40 Cold Spring Road, Rocky Hill, CT 06067<br>
+            Phone: 860.436.4901<br>
+            Fax: 860.436.4953<br>
+            Email: info@zuvic.com</div> -->
+        </div>
+    </div>
+
+    <div class="remodal" data-remodal-id="marici-modal">
+        <button data-remodal-action="close" class="remodal-close"></button>
+        <div class="bio">
+            <div class="bio left">
+                <img src="/images/marici.jpg">
+            </div>
+            <div class="bio right">
+                <div class="bio-header">Marici Zuvic</div>
+                <span style="font-weight: bold; text-transform: uppercase; padding-bottom: 12px;">President</span>
+                Ms. Zuvic, the founder of Zuvic, Carr and Associates, Inc. (Zuvic Carr) has over 30 years of experience as a municipal and
+                highway engineer. She earned a B.S. in Civil Engineering from the University of Hartford and a B.S. in Civil
+                Engineering Technology from the Technical State University in Santiago, Chile. Ms. Zuvic worked for the Connecticut
+                Department of Transportation for over 20 years. Her experience includes major highway and bridge construction
+                inspection, design of a variety of transportation related projects, bridge safety review, and consultant/municipal
+                coordination.
+            </div>
+        </div>
+    </div>
+
+    <div class="remodal" data-remodal-id="bob-modal">
+        <button data-remodal-action="close" class="remodal-close"></button>
+        <div class="bio">
+            <div class="bio left">
+                <img src="/images/bob.jpg">
+            </div>
+            <div class="bio right">
+                <div class="bio-header">Robert J. Carr, P.E., LEP</div>
+                <span style="font-weight: bold; text-transform: uppercase; padding-bottom: 12px;">Chief Operating Officer</span>
+                Mr. Carr serves as principal-in-charge of environmental projects at Zuvic Carr. He has over 25 years of experience as an
+                environmental engineer and consultant working for private sector clients as well as local and state agencies
+                in Connecticut, New York and Rhode Island. Mr. Carr’s expertise includes all phases of environmental site
+                assessments, The Connecticut Transfer Act, environmental compliance, and the design and permitting of soil
+                and groundwater remediation systems. Mr. Carr also has conducted numerous environmental compliance audits
+                for various industrial and commercial facilities in Connecticut and has authored several professional articles.
+                He is a licensed professional engineer in Connecticut, New York, and Rhode Island and a licensed environmental
+                professional (LEP) in Connecticut.
+            </div>
+        </div>
+    </div>
+
+    <div class="remodal" data-remodal-id="tomek-modal">
+        <button data-remodal-action="close" class="remodal-close"></button>
+        <div class="bio">
+            <div class="bio left">
+                <img src="/images/tomek.jpg">
+            </div>
+            <div class="bio right">
+                <div class="bio-header">Tomek Grajewski, P.E.</div>
+                <span style="font-weight: bold; text-transform: uppercase; padding-bottom: 12px;">Vice President</span>
+                Mr. Grajewski is responsible for special multidisciplinary projects and has over 30 years of experience as a civil engineer
+                and project manager. He earned a B.S. degree in civil engineering from the Gdansk Polytechnic Institute and
+                has completed advanced studies at the University of Connecticut. He is a licensed professional engineer and
+                a licensed asbestos consultant/inspector. Mr. Grajewski has managed multidisciplinary projects worth more
+                than $60 million. He has extensive experience working with numerous Connecticut State Agencies and large
+                corporations. He has a broad range of experience in site planning, design, and permitting.
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="remodal" data-remodal-id="victoria-modal">
+        <button data-remodal-action="close" class="remodal-close"></button>
+        <div class="bio">
+            <div class="bio left">
+                <img src="/images/head_tory_man.jpg">
+            </div>
+            <div class="bio right">
+                <div class="bio-header">Victoria L. Man, LEP</div>
+                <span style="font-weight: bold; text-transform: uppercase; padding-bottom: 12px;">Director of Environmental Services</span>
+                Ms. Man directs all environmental projects, manages staff, and oversees the company’s remediation activities. She has comprehensive
+                knowledge of remedial investigation techniques and strategies. Ms. Man earned a B.S. in Biology/Chemistry
+                from the University of Connecticut and has served as the Senior Project Manager for environmental projects
+                for nine years.
+            </div>
+        </div>
+    </div>
+
+    <div class="remodal" data-remodal-id="miroslav-modal">
+        <button data-remodal-action="close" class="remodal-close"></button>
+        <div class="bio">
+            <div class="bio left">
+                <img src="/images/miroslav.jpg">
+            </div>
+            <div class="bio right">
+                <div class="bio-header">Miroslav Grajewski, P.E.</div><br>
+                Mr. Grajewski is responsible for business development and client relations. His professional engineering experience includes
+                project management, design, and oversight of master plan development on a variety of projects throughout
+                Connecticut and New England. Mr. Grajewski earned a B.S. in Civil Engineering from the University of Connecticut
+                and has served as a Civil Engineer since joining the firm in 2012.
+            </div>
+        </div>
+    </div>
+    <!-- Swiper JS -->
+    <!-- <script src="/js/swiper.min.js"></script> -->
+    <script src="/js/remodal.min.js"></script>
+</body>
+</html>
