@@ -317,7 +317,7 @@ li {
   display: block;
   left: 0;
   bottom: 0;
-  background: linear-gradient(to right, #940f0d 0%, #943837d6 100%), url(../images/footer_3.jpg);
+  background: linear-gradient(to right, #940f0d 0%, #943837d6 100%), url(../images/footer.jpg);
   align-items: center;
   background-size: cover;
 }
