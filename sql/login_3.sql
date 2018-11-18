@@ -1,0 +1,1 @@
+ALTER TABLE login ADD COLUMN login_active int(2) DEFAULT 0;

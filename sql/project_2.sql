@@ -1,0 +1,1 @@
+ALTER TABLE project_content DROP PRIMARY KEY, ADD PRIMARY KEY(project_content_id, project_content_site_id, project_content_type);

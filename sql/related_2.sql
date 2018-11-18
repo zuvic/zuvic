@@ -1,0 +1,1 @@
+ALTER TABLE project_related DROP PRIMARY KEY, ADD PRIMARY KEY(project_related_id, project_related_site_id);
