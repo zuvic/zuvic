@@ -1,0 +1,24 @@
+<?php
+
+global $settings;
+
+$settings = [
+  'session_length' => 5*60 // 5 Minutes
+];
+
+global $db_settings;
+
+$db_settings = [
+  'host'     => '127.0.0.1',
+  'username' => 'SOMEUSER',
+  'password' => 'SOMEPASS',
+  'name'     => 'zuvic_db'
+];
+
+global $ses_settings;
+
+$ses_settings = [
+  'sender' => 'no-reply@zuvic.com',
+  'verify_url' => 'http://admin.zuvic.com/admin/verify',
+  'reset_url' => 'http://admin.zuvic.com/admin/reset'
+];
