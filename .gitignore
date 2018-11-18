@@ -1,0 +1,9 @@
+.DS_STORE
+misc/
+new/
+.history/
+.htaccess
+settings.inc
+.vscode/
+html/images/*/
+html/images_cache/
