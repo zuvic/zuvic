@@ -1,0 +1,86 @@
+server {
+listen       80;
+server_name  zuvic.com;
+
+root        /var/www/html/;
+index       index.html index.htm index.php;
+
+access_log  /var/log/access-zuvic.com.log;
+
+location / {
+     if ($request_method = 'POST') {
+        add_header 'Access-Control-Allow-Origin' '*';
+        add_header 'Access-Control-Allow-Credentials' 'true';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+     }
+}
+
+location @404 {
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_param  HTTPS  $https;
+    fastcgi_param  SCRIPT_FILENAME  $document_root/404.php;
+    include        fastcgi_params;
+    fastcgi_intercept_errors off;  # otherwise, no custom 404 :-)
+}
+
+location @page {
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_param  HTTPS  $https;
+    fastcgi_param  SCRIPT_FILENAME  $document_root/index.php;
+    include        fastcgi_params;
+    fastcgi_intercept_errors off;  # otherwise, no custom 404 :-)
+}
+
+location ~ \.(php|html?)$ {
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_param  HTTPS  $https;
+    fastcgi_param  SCRIPT_FILENAME  $document_root/$fastcgi_script_name;
+    include        fastcgi_params;
+}
+
+location ~ /admin.*$ {
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_param  HTTPS  $https;
+    fastcgi_param  SCRIPT_FILENAME  $document_root/admin/index.php;
+    include        fastcgi_params;
+
+    location ~ /js.*$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_param  HTTPS  $https;
+        fastcgi_param  SCRIPT_FILENAME  $document_root/$fastcgi_script_name;
+        include        fastcgi_params;
+        add_header  Content-Type    application/x-javascript;
+    }
+    
+    location ~ /css.*$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_param  HTTPS  $https;
+        fastcgi_param  SCRIPT_FILENAME  $document_root/$fastcgi_script_name;
+        include        fastcgi_params;
+        add_header  Content-Type    text/css;
+    }
+
+    location ~ /api.*$ {
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_param  HTTPS  $https;
+        fastcgi_param  SCRIPT_FILENAME  $document_root/admin/api/index.php;
+        include        fastcgi_params;
+    }
+}
+
+location ~ /project/.*$ {
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_param  HTTPS  $https;
+    fastcgi_param  SCRIPT_FILENAME  $document_root/project/index.php;
+    include        fastcgi_params;
+}
+
+location ~ /services/.*$ {
+    fastcgi_pass   127.0.0.1:9000;
+    fastcgi_param  HTTPS  $https;
+    fastcgi_param  SCRIPT_FILENAME  $document_root/services/index.php;
+    include        fastcgi_params;
+}
+
+}
