@@ -18,7 +18,13 @@ $password = $db_settings["password"];
 $project_site_id = '';
 $project_site_name = '';
 
-$project_content = array();
+$project_content = [
+    'challenges' => [],
+    'solutions' => [],
+    'highlights' => [],
+    'sub-title' => [''],
+    'title' => ['']
+];
 $project_related = array();
 $related_projects = array();
 
