@@ -207,6 +207,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           }
           http_response_code(400);
           die('The request data is invalid');
+      case "service":
+          if($data['method'] == 'content' && isset($data['name'])) {
+            http_response_code(200);
+            $response['data'] = getServiceContent($db, $data['name']);
+            break;
+          }
       default:
           http_response_code(400);
           die('The request type is invalid');
@@ -425,7 +431,7 @@ function activateAccount(PDO $db, String $pass, String $id) {
   $success = false;
 
   try {
-    $query = $db->prepare('UPDATE `login` SET login_pass = ?, login_active = 1 WHERE login_id = ?');
+    $query = $db->prepare('UPDATE `login` SET login_pass = ?, login_active = 1, login_token = null, login_token_expiry = null WHERE login_id = ?');
     $query->execute(array(password_hash($pass, PASSWORD_BCRYPT), $id));
 
     $success = $query->rowCount() == 1;
@@ -936,6 +942,31 @@ function getRelatedProjects($db, $projectID) {
   }
 
   return $project_related;
+}
+
+function getServiceContent(PDO $db, String $name) {
+  global $response;
+  $service_content = array();
+  $success = false;
+
+  try {
+    $query = $db->prepare('Select * from services_content where services_content_page = ?');
+    $success = $query->execute(array($name));
+  
+    while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+      $service_content[$row['services_content_type']] = $row['services_content_value'];
+    }
+  } catch (PDOException  $e ) {
+    http_response_code(500);
+    die('PDO Error: ' . $e);
+  }
+
+  if(!$success) {
+    http_response_code(500);
+    $response['msg'] = 'Error getting services content';
+  }
+
+  return $service_content;
 }
 
 function sendEmail($email, $token, $method) {
