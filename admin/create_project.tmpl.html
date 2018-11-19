@@ -1,0 +1,36 @@
+<md-dialog class="login-dialog">
+    <md-toolbar>
+      <div class="md-toolbar-tools" layout="row" layout-align="center center">
+        <h3 ng-show="!working">Create a project</h3>
+        <md-progress-circular class="md-hue-1" ng-show="working" md-theme="progressTheme" md-diameter="20px"></md-progress-circular>
+        <!-- <span flex></span> -->
+      </div>
+    </md-toolbar>
+
+    <div ng-class="{'active': !working }" class="fields">
+      <md-dialog-content>
+        <form name="createProjectForm">
+        <div class="md-dialog-content" layout="column">
+            <div class="md-block">
+                Choose a project name, which will be used in the shareable URL
+            </div>
+          <div class="md-block">
+            <md-input-container eopd-enter="createSubmit()" class="md-block">
+              <label>Name</label>
+              <input required name="name" ng-model="newProject.name">
+              <div ng-messages="createProjectForm.name.$error">
+                <div ng-message-exp="['required']">You must enter a project name</div>
+              </div>
+            </md-input-container>
+          </div>
+        </div>
+        </form>
+      </md-dialog-content>
+
+      <md-dialog-actions ng-class="{'active': !working }" class="fields" layout="row" layout-align="center center">
+        <md-button class="md-raised md-primary" eopd-enter="createSubmit()" ng-click="createSubmit()" layout="row" layout-align="center center">
+          <span>submit</span>
+        </md-button>
+      </md-dialog-actions>
+    </div>
+</md-dialog>

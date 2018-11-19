@@ -1,0 +1,34 @@
+<md-dialog class="login-dialog">
+    <md-toolbar>
+      <div class="md-toolbar-tools" layout="row" layout-align="center center">
+        <h3 ng-show="!logging_in">Login</h3>
+        <md-progress-circular class="md-hue-1" ng-show="logging_in" md-theme="progressTheme" md-diameter="20px"></md-progress-circular>
+        <!-- <span flex></span> -->
+      </div>
+    </md-toolbar>
+
+    <div ng-class="{'active': !logging_in }" class="fields">
+      <md-dialog-content>
+        <div class="md-dialog-content" layout="column">
+          <div class="md-block">
+            <md-input-container eopd-enter="submit()" class="md-block">
+              <label>Username</label>
+              <input ng-model="username">
+            </md-input-container>
+          </div>
+          <div class="md-block">
+            <md-input-container eopd-enter="submit()" class="md-block">
+              <label>Password</label>
+              <input type="password" ng-model="password">
+            </md-input-container>
+          </div>
+        </div>
+      </md-dialog-content>
+
+      <md-dialog-actions ng-class="{'active': !logging_in }" class="fields" layout="row" layout-align="center center">
+        <md-button class="md-raised md-primary" eopd-enter="submit()" ng-click="submit()" layout="row" layout-align="center center">
+          <span>Login</span>
+        </md-button>
+      </md-dialog-actions>
+    </div>
+</md-dialog>

@@ -1,0 +1,46 @@
+<md-dialog class="login-dialog">
+    <md-toolbar>
+      <div class="md-toolbar-tools" layout="row" layout-align="center center">
+        <h3 ng-show="!logging_in">Activate your account</h3>
+        <md-progress-circular class="md-hue-1" ng-show="logging_in" md-theme="progressTheme" md-diameter="20px"></md-progress-circular>
+        <!-- <span flex></span> -->
+      </div>
+    </md-toolbar>
+
+    <div ng-class="{'active': !logging_in }" class="fields">
+      <md-dialog-content>
+        <form name="verifyForm">
+        <div class="md-dialog-content" layout="column">
+            <div class="md-block">
+                In order to activate your account, you must generate a secure password
+            </div>
+          <div class="md-block">
+            <md-input-container eopd-enter="submit()" class="md-block">
+              <label>Password</label>
+              <input required type="password" name="password" ng-model="password" minlength="10" maxlength="30" ng-pattern="/^(?=.*[!@#$%&*].*)(?=.*[\d].*)[a-zA-Z\d!@#$%&*]{10,}$/">
+              <div ng-messages="verifyForm.password.$error">
+                <div ng-message-exp="['pattern', 'required', 'minlength', 'maxlength']">Your password must be between 10 and 30 characters in length, and include at least 1 number and 1 or more of the following: !@#$%&*</div>
+              </div>
+            </md-input-container>
+          </div>
+          <div class="md-block">
+            <md-input-container eopd-enter="submit()" class="md-block">
+              <label>Confirm password</label>
+              <input required type="password" name="confirm_password" ng-model="confirm_password" equal="{{password}}" minlength="10" maxlength="30" ng-pattern="/^(?=.*[!@#$%&*].*)(?=.*[\d].*)[a-zA-Z\d!@#$%&*]{10,}$/">
+              <div ng-messages="verifyForm.confirm_password.$error">
+                <div ng-message="equal">The passwords do not match</div>
+                <div ng-message-exp="['pattern', 'required', 'minlength', 'maxlength']">Your password must be between 10 and 30 characters in length, and include at least 1 number and 1 or more of the following: !@#$%&*</div>
+              </div>
+            </md-input-container>
+          </div>
+        </div>
+        </form>
+      </md-dialog-content>
+
+      <md-dialog-actions ng-class="{'active': !logging_in }" class="fields" layout="row" layout-align="center center">
+        <md-button class="md-raised md-primary" eopd-enter="submit()" ng-click="submit()" layout="row" layout-align="center center">
+          <span>submit</span>
+        </md-button>
+      </md-dialog-actions>
+    </div>
+</md-dialog>

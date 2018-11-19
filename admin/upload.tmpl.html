@@ -1,0 +1,36 @@
+<md-dialog class="upload-dialog">
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h3>Upload an Image</h3>
+        <span flex></span>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+          <form name="form" flex layout="column" layout-align="start center">
+            <div ngf-drop ng-model="files" ngf-multiple="true" class="drop-box" ngf-pattern="'.jpg'"
+            ngf-accept="'image/jpg'" layout-padding layout="column" layout-align="center center">
+              <i class="material-icons" ng-hide="uploading || files" style="font-size: 85px; color: #2196f3;">cloud_upload</i>
+              <md-progress-circular ng-hide="uploading || files" value="{{ percentage }}" md-diameter="40"></md-progress-circular>
+              <img ng-show="files" ngf-thumbnail="files">
+              <div layout="row" layout-align="center center">
+                <md-button class="md-primary upload-button" ngf-select ngf-multiple="true" ng-model="files" name="files" ngf-pattern="'.jpg'"
+                ngf-accept="'image/jpg'">&nbsp;&nbsp;Choose a file&nbsp;&nbsp;</md-button> or drop it here
+              </div>
+            </div>
+          </form>
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button class="md-raised md-primary" ng-click="submit()" layout="row" layout-align="center center">
+        <md-progress-circular class="md-hue-1" ng-show="uploading" md-theme="progressTheme" md-diameter="20px"></md-progress-circular>
+        <span ng-show="!uploading">Upload</span>
+      </md-button>
+      <md-button ng-click="cancel()">
+        Close
+      </md-button>
+    </md-dialog-actions>
+</md-dialog>

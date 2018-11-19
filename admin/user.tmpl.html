@@ -1,0 +1,49 @@
+<md-dialog class="login-dialog">
+    <md-toolbar>
+      <div class="md-toolbar-tools" layout="row" layout-align="center center">
+        <h3 ng-show="!creating_user">Create a New User</h3>
+        <md-progress-circular class="md-hue-1" ng-show="creating_user" md-theme="progressTheme" md-diameter="20px"></md-progress-circular>
+        <!-- <span flex></span> -->
+      </div>
+    </md-toolbar>
+
+    <div ng-class="{'active': !creating_user }" class="fields">
+      <md-dialog-content>
+        <div class="md-dialog-content" layout="column">
+          <div class="md-block" layout="row">
+            <md-input-container eopd-enter="submitNewUser()" class="md-block">
+              <label>First Name</label>
+              <input ng-model="newUser.login_first">
+            </md-input-container>
+
+            <md-input-container eopd-enter="submitNewUser()" class="md-block">
+              <label>Last Name</label>
+              <input ng-model="newUser.login_last">
+            </md-input-container>
+          </div>
+          <div class="md-block" layout="column">
+            <md-input-container eopd-enter="submitNewUser()" class="md-block">
+              <label>Username</label>
+              <input ng-model="newUser.login_user">
+            </md-input-container>
+
+            <md-input-container eopd-enter="submitNewUser()" class="md-block">
+              <label>Email</label>
+              <input ng-model="newUser.login_email">
+            </md-input-container>
+          </div>
+          <div class="md-block" layout="column">
+              <md-switch ng-model="newUser.login_type" ng-init="newUser.login_type = 2" ng-true-value="'{{1}}'" ng-false-value="'{{2}}'" aria-label="Account Type">
+                  {{ newUser.login_type == 1 && 'Administrator' || 'Standard'}}
+              </md-switch>
+          </div>
+        </div>
+      </md-dialog-content>
+
+      <md-dialog-actions ng-class="{'active': !creating_user }" class="fields" layout="row" layout-align="center center">
+        <md-button class="md-raised md-primary" eopd-enter="submitNewUser()" ng-click="submitNewUser()" layout="row" layout-align="center center">
+          <span>Add User</span>
+        </md-button>
+      </md-dialog-actions>
+    </div>
+</md-dialog>

@@ -1,0 +1,223 @@
+html, body, .main {
+  height: 100%;
+  width: 100%;
+  color: #585858;
+}
+
+#logo {
+  padding: 40px 20px !important;
+}
+
+.content-wrapper {
+ height: 90%;
+ padding: 0 !important;
+}
+
+.content {
+  background: #fff;
+  height: 90%;
+}
+
+.nav {
+  height: 100%;
+  max-height: 100%;
+}
+
+.tall-toolbar {
+  height: fit-content;
+}
+
+.project-selection {
+  height: fit-content;
+}
+
+.content-sections {
+  height: fit-content;
+  min-height: auto;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  border-radius: 3px;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.content-sections md-input-container {
+  margin-bottom: 0;
+}
+
+.section-wrapper {
+  max-height: calc(100% - 88px - 64px);
+}
+
+.projectImage {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  border: 5px solid rgb(250,250,250);
+  border-radius: 8px;
+}
+
+.projectImage .delete-image {
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+}
+
+.projectImage:hover .delete-image {
+  opacity: 1;
+}
+
+.delete-image {
+  float: right;
+}
+
+.drop-box {
+  border: 1px dashed #ccc;
+  width: 100%;
+  min-height: 20%;
+}
+
+.upload-button {
+  margin: 8px;
+  padding: 0;
+}
+
+.upload-dialog {
+  width: 50%;
+}
+
+.login-dialog {
+  width: 30%;
+  overflow: hidden;
+}
+.login-dialog .fields {
+  height: 0%;
+  overflow: hidden;
+  max-height: fit-content;
+  transition: all 0.5s ease-in-out;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+}
+
+.login-dialog .fields.active {
+  height: 100%;
+}
+
+.main-menu {
+  width: 0%;
+  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+}
+
+.main-menu.active {
+  width: 270px;
+}
+
+.transition {
+  display: none;
+}
+
+.transition.active {
+  display: flex;
+}
+
+image-loader {
+  width: 100%;
+}
+
+img {
+  max-width:100%;
+  max-height:115px;
+}
+
+img:after {
+  content: ' ';
+  background: transparent url('/images/loader.gif') center no-repeat;
+  background-size : auto 100%;
+}
+
+ul {
+  padding: 0;
+  list-style: none;
+}
+
+md-tabs {
+  max-height: calc(100% - 88px);
+}
+
+md-tabs[md-border-bottom] md-tabs-wrapper {
+  border-width: 0;
+}
+
+md-sidenav {
+  overflow: hidden;
+}
+
+.md-avatar {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+md-toast.success-toast .md-toast-content {
+  background: rgb(26, 148, 246);
+}
+
+md-toast.error-toast .md-toast-content {
+  background: rgb(255,87,34);
+}
+
+md-menu-item .md-button {
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+md-menu-item .md-button.active {
+  background: rgb(26, 148, 246);
+  color: #fff;
+}
+
+md-menu-item .md-button span i {
+  display: none;
+}
+
+md-menu-item .md-button.active span i {
+  display: block;
+}
+
+md-menu-item .md-button.active:hover {
+  background: rgb(17, 134, 228);
+}
+
+.md-subheader {
+  top: -2px !important;
+  z-index: 30 !important;
+}
+
+
+.no-margin {
+  margin: 0;
+  padding: 0;
+}
+
+*.unselectable {
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+
+  /*
+    Introduced in IE 10.
+    See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+  */
+  -ms-user-select: none;
+  user-select: none;
+}

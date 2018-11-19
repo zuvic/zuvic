@@ -1,0 +1,15 @@
+<md-bottom-sheet class="md-list md-has-header">
+  <md-subheader ng-cloak>Welcome, {{ login.login_first }}</md-subheader>
+  <md-list>
+    <md-list-item>
+      <md-button ng-click="navigateTo('profile')" class="md-list-item-content">
+        <span class="md-inline-list-icon-label">Profile</span>
+      </md-button>
+    </md-list-item>
+    <md-list-item>
+      <md-button ng-click="logout()" class="md-list-item-content md-warn">
+        <span class="md-inline-list-icon-label">Logout</span>
+      </md-button>
+    </md-list-item>
+  </md-list>
+</md-bottom-sheet>
