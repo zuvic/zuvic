@@ -79,7 +79,7 @@ if(!getLogin($db)) {
                           </md-switch>
                         </md-input-container>
                         <md-input-container>
-                          <md-switch ng-model="user.login_active" ng-true-value="'{{1}}'" ng-false-value="'{{0}}'" ng-disabled="user.login_user == 'admin'" aria-label="Active">
+                          <md-switch ng-model="user.login_active" ng-true-value="'{{1}}'" ng-false-value="'{{0}}'" ng-disabled="user.login_user == 'admin' || user.login_token !== null" aria-label="Active">
                           {{ user.login_active == 1 && 'Active' || 'Inactive'}}
                           </md-switch>
                         </md-input-container>
@@ -106,7 +106,7 @@ if(!getLogin($db)) {
                           </md-switch>
                         </md-input-container>
                         <md-input-container>
-                          <md-switch ng-model="user.login_active" ng-true-value="'{{1}}'" ng-false-value="'{{0}}'" ng-disabled="user.login_user == 'admin'" aria-label="Active">
+                          <md-switch ng-model="user.login_active" ng-true-value="'{{1}}'" ng-false-value="'{{0}}'" ng-disabled="user.login_user == 'admin' || user.login_token !== null" aria-label="Active">
                           {{ user.login_active == 1 && 'Active' || 'Inactive'}}
                           </md-switch>
                         </md-input-container>
@@ -133,7 +133,7 @@ if(!getLogin($db)) {
                           </md-switch>
                         </md-input-container>
                         <md-input-container>
-                          <md-switch ng-model="user.login_active" ng-true-value="'{{1}}'" ng-false-value="'{{0}}'" ng-disabled="user.login_user == 'admin'" aria-label="Active">
+                          <md-switch ng-model="user.login_active" ng-true-value="'{{1}}'" ng-false-value="'{{0}}'" ng-disabled="user.login_user == 'admin' || user.login_token !== null" aria-label="Active">
                           {{ user.login_active == 1 && 'Active' || 'Inactive'}}
                           </md-switch>
                         </md-input-container>
