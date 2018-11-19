@@ -801,14 +801,14 @@ function deleteProjectContent(PDO $db, String $id) {
 }
 
 function updateImages($db, $order, $projectID) {
-  $json = file_get_contents(__DIR__ . '/../config.json');
-  $config = json_decode($json, true);
+  global $settings;
+  global $response;
   $success = true;
 
   $old_files = [];
   $files = [];
 
-  if ($handle = opendir($config['image_path'] . $projectID . '/')) {
+  if ($handle = opendir($settings['image_path'] . $projectID . '/')) {
 
     while (false !== ($entry = readdir($handle))) {
       if($entry!== '.' && $entry !== '..') {
@@ -824,8 +824,8 @@ function updateImages($db, $order, $projectID) {
 
   foreach($images as $idx => $image) {
     $path = pathinfo($image);
-    $old_files[$idx] = $config['image_path'] . $projectID . '/' . $path['filename'] . '_tmp' . '.jpg';
-    $success = copy($config['image_path'] . $projectID . '/' . $image, $config['image_path'] . $projectID . '/' . $path['filename'] . '_tmp' . '.jpg');
+    $old_files[$idx] = $settings['image_path'] . $projectID . '/' . $path['filename'] . '_tmp' . '.jpg';
+    $success = copy($settings['image_path'] . $projectID . '/' . $image, $settings['image_path'] . $projectID . '/' . $path['filename'] . '_tmp' . '.jpg');
     
     if(!$success) {
       http_response_code(500);
@@ -834,7 +834,7 @@ function updateImages($db, $order, $projectID) {
   }
 
   foreach($order as $idx => $newOrder) {
-    $success = rename($old_files[$newOrder], $config['image_path'] . $projectID . '/' . ($idx + 1) . '.jpg');
+    $success = rename($old_files[$newOrder], $settings['image_path'] . $projectID . '/' . ($idx + 1) . '.jpg');
 
     if(!$success) {
       http_response_code(500);
@@ -846,19 +846,18 @@ function updateImages($db, $order, $projectID) {
 }
 
 function uploadImage($db, $newFiles, $projectID) {
+  global $settings;
   global $response;
-  $json = file_get_contents(__DIR__ . '/../config.json');
-  $config = json_decode($json, true);
   $success = true;
 
   foreach($newFiles['name'] as $idx => $name) {
     $files = [];
 
-    if (!file_exists($config['image_path'] . $projectID . '/')) {
-        mkdir($config['image_path'] . $projectID . '/', 0777);
+    if (!file_exists($settings['image_path'] . $projectID . '/')) {
+        mkdir($settings['image_path'] . $projectID . '/', 0777);
     }
 
-    if ($handle = opendir($config['image_path'] . $projectID . '/')) {
+    if ($handle = opendir($settings['image_path'] . $projectID . '/')) {
 
       while (false !== ($entry = readdir($handle))) {
         if($entry!== '.' && $entry !== '..') {
@@ -872,7 +871,7 @@ function uploadImage($db, $newFiles, $projectID) {
     $images = preg_grep('/\.jpg$/i', $files);
 
     if(updateProjectImages($db, $projectID, count($images) + 1)) {
-      $success = move_uploaded_file( $newFiles['tmp_name'][$idx],  $config['image_path'] . $projectID . '/' . (count($images) + 1) . '.' . strtolower(pathinfo($name, PATHINFO_EXTENSION)));
+      $success = move_uploaded_file( $newFiles['tmp_name'][$idx],  $settings['image_path'] . $projectID . '/' . (count($images) + 1) . '.' . strtolower(pathinfo($name, PATHINFO_EXTENSION)));
     }
 
     if(!$success) {
@@ -885,16 +884,16 @@ function uploadImage($db, $newFiles, $projectID) {
 }
 
 function deleteImage($db, $filename, $projectID) {
-  $json = file_get_contents(__DIR__ . '/../config.json');
-  $config = json_decode($json, true);
+  global $settings;
+  global $response;
   $success = false;
 
   $num_existing_images = 0;
   $files = [];
 
-  $success = unlink($config['image_path'] . $projectID . '/' . $filename . '.jpg');
+  $success = unlink($settings['image_path'] . $projectID . '/' . $filename . '.jpg');
 
-  if ($success && $handle = opendir($config['image_path'] . $projectID . '/')) {
+  if ($success && $handle = opendir($settings['image_path'] . $projectID . '/')) {
 
     while (false !== ($entry = readdir($handle))) {
       if($entry !== '.' && $entry !== '..') {
@@ -911,7 +910,7 @@ function deleteImage($db, $filename, $projectID) {
   sort($images);
 
   foreach($images as $key => $image) {
-    rename( $config['image_path'] . $projectID . '/' . $image,  $config['image_path'] . $projectID . '/' . ($key + 1) . '.jpg');
+    rename( $settings['image_path'] . $projectID . '/' . $image,  $settings['image_path'] . $projectID . '/' . ($key + 1) . '.jpg');
   }
 
   $success = updateProjectImages($db, $projectID, count($images));
