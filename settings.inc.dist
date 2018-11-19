@@ -3,7 +3,8 @@
 global $settings;
 
 $settings = [
-  'session_length' => 5*60 // 5 Minutes
+  'session_length' => 5*60, // 5 Minutes
+  'image_path' => '/var/www/html_beta/html/images/'
 ];
 
 global $db_settings;
