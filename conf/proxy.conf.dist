@@ -1,0 +1,38 @@
+server {
+    listen 80;
+    server_name admin.zuvic.com;
+
+    location / {
+        proxy_pass http://localhost:7070;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+}
+
+server {
+    listen 80;
+    server_name zuvic.com;
+
+    location / {
+        root   /var/www/html;
+        index  index.php index.html index.htm;
+    }
+
+}
+
+server {
+    listen 80;
+    server_name beta.zuvic.com;
+
+    location / {
+        proxy_pass http://localhost:5080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+}

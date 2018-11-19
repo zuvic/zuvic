@@ -1,0 +1,47 @@
+server {
+    listen       5080;
+    server_name  localhost;
+
+    root        /var/www/html_beta;
+    index       index.html index.htm index.php;
+
+    access_log  /var/log/nginx/access-beta.zuvic.com.log;
+    error_log  /var/log/nginx/error-beta.zuvic.com.log;
+
+    location / {
+        if ($request_method = 'POST') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Credentials' 'true';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+        }
+    }
+
+    location /admin {
+        rewrite ^ http://admin.local.zuvic.com$request_uri permanent;
+    }
+
+    location @404 {
+        fastcgi_pass   unix:/var/run/php-fpm/php-fpm.sock;
+        fastcgi_param  HTTPS  $https;
+        fastcgi_param  SCRIPT_FILENAME  $document_root/404.php;
+        include        fastcgi_params;
+        fastcgi_intercept_errors off;  # otherwise, no custom 404 :-)
+    }
+
+    location @page {
+        fastcgi_pass   unix:/var/run/php-fpm/php-fpm.sock;
+        fastcgi_param  HTTPS  $https;
+        fastcgi_param  SCRIPT_FILENAME  $document_root/index.php;
+        include        fastcgi_params;
+        fastcgi_intercept_errors off;  # otherwise, no custom 404 :-)
+    }
+
+    location ~ \.(php|html?)$ {
+        fastcgi_pass   unix:/var/run/php-fpm/php-fpm.sock;
+        fastcgi_param  HTTPS  $https;
+        fastcgi_param  SCRIPT_FILENAME  $document_root/$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+
+}
