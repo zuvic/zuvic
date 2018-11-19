@@ -22,8 +22,8 @@ $project_content = [
     'challenges' => [],
     'solutions' => [],
     'highlights' => [],
-    'sub-title' => [''],
-    'title' => ['']
+    'sub-title' => [],
+    'title' => []
 ];
 $project_related = array();
 $related_projects = array();
@@ -120,10 +120,13 @@ try {
       if(!is_array(@$project_content[$row['project_content_type']])) $project_content[$row['project_content_type']] = [];
       $project_content[$row['project_content_type']][] = $row['project_content_value'];
     }
-  } catch (PDOException  $e ) {
-    echo "Error: " . $e;
-  }
 
+    if(count($project_content['sub-title']) == 0) $project_content['sub-title'][] = '';
+    if(count($project_content['title']) == 0) $project_content['title'][] = '';
+} catch (PDOException  $e ) {
+  echo "Error: " . $e;
+}
+  echo "";
 ?>
 <html lang="en">
 
