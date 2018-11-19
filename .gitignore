@@ -6,4 +6,6 @@ new/
 settings.inc
 .vscode/
 html/images/*/
+composer.lock
+vendor/
 html/images_cache/
