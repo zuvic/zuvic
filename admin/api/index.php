@@ -12,6 +12,22 @@ $SesClient = new SesClient([
   'version' => 'latest'
 ]);
 
+global $services_aliases;
+$services_aliases = [
+  'environmental' => 'enviro',
+  'permitting' => 'perm',
+  'water' => 'water',
+  'transport' => 'transport',
+  'civil' => 'civil',
+  'survey' => 'survey',
+  'planning' => 'planning',
+  'construction' => 'const',
+  'structural' => 'structural',
+  'bridges' => 'bridges',
+  'utility' => 'utility'
+];
+
+
 // Shutdown function
 function ShutdownHandler() {
   $error = error_get_last();
@@ -211,6 +227,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           if($data['method'] == 'content' && isset($data['name'])) {
             http_response_code(200);
             $response['data'] = getServiceContent($db, $data['name']);
+            break;
+          } else if($data['method'] == 'projects' && isset($data['name'])) {
+            http_response_code(200);
+            $response['data'] = getServiceProjects($db, $data['name']);
+            break;
+          } else if($data['method'] == 'save_content' && isset($data['name'])) {
+            http_response_code(200);
+            if(saveServiceContent($db, $data['name'], $data['content']) === true) {
+              http_response_code(200);
+              $response['data'] = getServiceContent($db, $data['name']);
+            } else {
+              http_response_code(500);
+              die('Error saving service content: ' . strtoupper($data['name']));
+            }
             break;
           }
       default:
@@ -954,7 +984,8 @@ function getServiceContent(PDO $db, String $name) {
     $success = $query->execute(array($name));
   
     while($row = $query->fetch(PDO::FETCH_ASSOC)) {
-      $service_content[$row['services_content_type']] = $row['services_content_value'];
+      $service_content[$row['services_content_idx']][$row['services_content_type']] = $row['services_content_value'];
+      $service_content[$row['services_content_idx']]['delete'] = false;
     }
   } catch (PDOException  $e ) {
     http_response_code(500);
@@ -967,6 +998,93 @@ function getServiceContent(PDO $db, String $name) {
   }
 
   return $service_content;
+}
+
+function getServiceProjects(PDO $db, String $service_name) {
+  global $response;
+  global $services_aliases;
+  $service_projects = array();
+  $success = false;
+
+  try {
+    $service_query = 'Select project_related_id, project_related_site_id from project_related where project_related_' . $services_aliases[$service_name] . ' IS NOT NULL ORDER BY project_related_' . $services_aliases[$service_name] . ' = 0, project_related_' . $services_aliases[$service_name] . ' asc';
+    $service_query = $db->prepare($service_query);
+    $success = $service_query->execute();
+  
+    if($success) {
+      while($row=$service_query->fetch(PDO::FETCH_ASSOC)) {
+        $nested_query = $db->prepare('Select project_site_name from project_site where project_site_id = ?');
+        $success = $nested_query->execute(array($row['project_related_site_id']));
+      
+        while($nested_row = $nested_query->fetch(PDO::FETCH_ASSOC)) {
+            $service_projects[] = array('project_related_site_id' => $row['project_related_site_id'], 'project_site_name' => $nested_row['project_site_name']);
+        }
+      }
+    }
+  } catch (PDOException  $e ) {
+    echo "Error: " . $e;
+  }
+
+  if(!$success) {
+    http_response_code(500);
+    $response['msg'] = 'Error getting services projects';
+  }
+
+  return $service_projects;
+}
+
+function saveServiceContent(PDO $db, String $name, Array $content) {
+  $success = false;
+
+  try {
+    foreach ($content as $idx => $content) {
+      if ($content['delete'] == False) {
+        $query = $db->prepare('INSERT INTO services_content (services_content_id, services_content_type, services_content_page, services_content_value, services_content_idx) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE services_content_value = ?');
+        $success = $query->execute(array(
+          null,
+          'title',
+          $name,
+          $content['title'],
+          $idx,
+          $content['title'],
+        ));
+
+        $success = $query->execute(array(
+          null,
+          'content',
+          $name,
+          $content['content'],
+          $idx,
+          $content['content'],
+        ));
+      } else {
+        $query = $db->prepare('DELETE FROM services_content WHERE services_content_type = ? and services_content_page = ? and services_content_idx = ?');
+        $success = $query->execute(array(
+          'title',
+          $name,
+          $idx
+        ));
+
+        $success = $query->execute(array(
+          'content',
+          $name,
+          $idx
+        ));
+      }
+
+      if(!$success) {
+        http_response_code(500);
+        $response['msg'] = 'Error updating services content';
+        break;
+      }
+    }
+
+  } catch (PDOException  $e ) {
+    http_response_code(500);
+    die("Error: " . $e);
+  }
+  
+  return $success;
 }
 
 function sendEmail($email, $token, $method) {

@@ -91,6 +91,10 @@ html, body, .main {
   width: 50%;
 }
 
+.upload-progress {
+  top: 50%;
+}
+
 .login-dialog {
   width: 30%;
   overflow: hidden;
@@ -150,6 +154,10 @@ ul {
 }
 
 md-tabs {
+  max-height: calc(100% - 88px);
+}
+
+md-tabs.md-dynamic-height md-tabs-content-wrapper {
   max-height: calc(100% - 88px);
 }
 

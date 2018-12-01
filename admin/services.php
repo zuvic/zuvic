@@ -25,7 +25,7 @@ if(!getLogin($db)) {
 
 <body class="main" ng-app="AngularCMS">
 
-  <div class="main" ng-controller="ProjectCtrl" layout="row" flex="100">
+  <div class="main" layout="row" flex="100">
 
     <div layout="row" layout-padding layout-align="center center" flex="20">
 
@@ -34,10 +34,10 @@ if(!getLogin($db)) {
           <h2 class="md-title">Select a Service</h2>
           <md-input-container layout-fill>
             <label><em>Service</em></label>
-            <md-select ng-model="activeProject">
+            <md-select ng-model="activeService">
               <md-option></md-option>
-              <md-option ng-repeat="project in projects" ng-value="project.id">
-                {{project.name}}
+              <md-option ng-repeat="service in ['civil', 'environmental', 'survey', 'planning', 'structural', 'transport', 'bridges', 'utility', 'water', 'construction', 'permitting']" ng-value="service">
+                {{service | capitalize}}
               </md-option>
             </md-select>
           </md-input-container>
@@ -50,115 +50,77 @@ if(!getLogin($db)) {
 
       <div class="content" flex md-whiteframe="4">
         <md-tabs md-dynamic-height md-border-bottom>
-          <md-tab label="header" md-on-select="onTabChanges('content')">
+          <!-- <md-tab label="header" md-on-select="onTabChanges('content')">
             <md-content class="md-padding" layout="column">
               <md-input-container>
-                <label>Title</label>
-                <input ng-model="projectContent.title.value">
+                <label>Header</label>
+                <input ng-model="serviceContent.title">
               </md-input-container>
               <md-input-container>
-                <label>Sub-Title</label>
-                <input ng-model="projectContent.subtitle.value">
+                <label>Content</label>
+                <textarea ng-model="serviceContent.content" rows="6"></textarea>
               </md-input-container>
             </md-content>
-          </md-tab>
+          </md-tab> -->
 
-          <md-tab label="challenges" md-on-select="onTabChanges('content')">
+          <md-tab label="content" md-on-select="onTabChanges('content')">
             <md-content class="section-wrapper" layout-padding>
               <div layout="column" layout-align="start start">
-                <div class="content-sections" layout="column" ng-repeat="(key, challenge) in projectContent.challenges track by $index" ng-show="challenge != null || challenge !== undefined" layout-fill>
+                <div class="content-sections" layout="column" ng-repeat="(key, content) in serviceContent track by $index" layout-fill>
+                  <md-input-container class="md-block" flex-gt-sm>
+                    <label>Title</label>
+                    <input ng-model="content.title">
+                  </md-input-container>
                   <md-input-container>
-                    <label>Challenge {{$index + 1}}</label>
-                    <textarea ng-change="updateSection('challenges', key, projectContent.challenges[key].value)" ng-model="projectContent.challenges[key].value" rows="3" md-select-on-focus></textarea>
+                    <label>Content</label>
+                    <textarea ng-model="content.content" rows="5" md-select-on-focus></textarea>
                   </md-input-container>
                   <div class="no-margin" layout="row" layout-align="end center">
                     <md-input-container class="no-margin">
-                          <md-button class="md-warn no-margin" ng-click="deleteContent($index, 'challenges')" layout="row" layout-align="center center"><i class="material-icons" ng-hide="projectContent.challenges[key].delete">delete_sweep</i><md-progress-circular class="md-warn" ng-show="projectContent.challenges[key].delete" md-diameter="20px"></md-progress-circular></md-button>
+                          <md-button class="md-warn no-margin" ng-click="deleteContent($index)" layout="row" layout-align="center center"><i class="material-icons" ng-hide="content.delete">delete_sweep</i><md-progress-circular class="md-warn" ng-show="content.delete" md-diameter="20px"></md-progress-circular></md-button>
                     </md-input-container>
                   </div>
                 </div>
               </div>
               <div class="no-margin" layout="row" layout-align="start center">
+                <md-input-container class="no-margin">
+                      <md-button class="md-raised md-primary" ng-click="addContent()" ng-disabled="activeService === null" layout="row" layout-align="center center"><i class="material-icons">add</i>&nbsp;Add</md-button>
+                </md-input-container>
+              </div>
+            </md-content>
+          </md-tab>
+
+          <md-tab label="order" md-on-select="onTabChanges('order')">
+            <md-content class="section-wrapper" layout-padding sv-root>
+              <md-divider ></md-divider>
+              <md-list sv-part="serviceProjects" class="md-dense" flex>
+                <md-list-item class="md-3-line" ng-repeat="project in serviceProjects" sv-element>
+                  <div class="md-list-item-text" layout="column">
+                    <h3>{{ project.project_site_name }}</h3>
+                    <!-- <h4>{{ item.what }}</h4>
+                    <p>{{ item.notes }}</p> -->
+                  </div>
+                  <span flex></span>
+                  <div layout="column" layout-align="center center">
+                    <md-button class="md-fab md-mini md-raised md-primary" sv-handle>
+                      <md-icon md-font-icon="material-icons" style="font-size:24px;">swap_vert</md-icon>
+                    </md-button>
+                  </div>
+                  <md-divider ></md-divider>
+                </md-list-item>
+              </md-list>
+              <!-- <div class="no-margin" layout="row" layout-align="start center">
                 <md-input-container class="no-margin">
                       <md-button class="md-raised md-primary" ng-click="addContent('challenges')" ng-disabled="activeProject === null" layout="row" layout-align="center center"><i class="material-icons">add</i>&nbsp;Add</md-button>
                 </md-input-container>
-              </div>
+              </div> -->
             </md-content>
           </md-tab>
 
-          <md-tab label="solutons" md-on-select="onTabChanges('content')">
-          <md-content class="section-wrapper" layout-padding>
-              <div layout="column" layout-align="start start">
-                <div class="content-sections" layout="column" ng-repeat="(key, solution) in projectContent.solutions track by $index" layout-fill>
-                  <md-input-container>
-                    <label>Solution {{$index + 1}}</label>
-                    <textarea ng-change="updateSection('solutions', key, projectContent.solutions[key].value)" ng-model="projectContent.solutions[key].value" md-select-on-focus></textarea>
-                  </md-input-container>
-                  <div class="no-margin" layout="row" layout-align="end center">
-                    <md-input-container class="no-margin">
-                          <md-button class="md-warn no-margin" ng-click="deleteContent($index, 'solutions')" layout="row" layout-align="center center"><i class="material-icons" ng-hide="projectContent.solutions[key].delete">delete_sweep</i><md-progress-circular class="md-warn" ng-show="projectContent.solutions[key].delete" md-diameter="20px"></md-progress-circular></md-button>
-                    </md-input-container>
-                  </div>
-                </div>
-              </div>
-              <div class="no-margin" layout="row" layout-align="start center">
-                <md-input-container class="no-margin">
-                      <md-button class="md-raised md-primary" ng-click="addContent('solutions')" ng-disabled="activeProject === null" layout="row" layout-align="center center"><i class="material-icons">add</i>&nbsp;Add</md-button>
-                </md-input-container>
-              </div>
-            </md-content>
-          </md-tab>
-
-          <md-tab label="highlights" md-on-select="onTabChanges('content')">
-          <md-content class="section-wrapper" layout-padding>
-              <div layout="column" layout-align="start start">
-                <div class="content-sections" layout="column" ng-repeat="(key, highlight) in projectContent.highlights track by $index" layout-fill>
-                  <md-input-container>
-                    <label>Highlight {{$index + 1}}</label>
-                    <textarea ng-change="updateSection('highlights', key, projectContent.highlights[key].value)" ng-model="projectContent.highlights[key].value" rows="3" md-select-on-focus></textarea>
-                  </md-input-container>
-                  <div class="no-margin" layout="row" layout-align="end center">
-                    <md-input-container class="no-margin">
-                          <md-button class="md-warn no-margin" ng-click="deleteContent($index, 'highlights')" layout="row" layout-align="center center"><i class="material-icons" ng-hide="projectContent.highlights[key].delete">delete_sweep</i><md-progress-circular class="md-warn" ng-show="projectContent.highlights[key].delete" md-diameter="20px"></md-progress-circular></md-button>
-                    </md-input-container>
-                  </div>
-                </div>
-              </div>
-              <div class="no-margin" layout="row" layout-align="start center">
-                <md-input-container class="no-margin">
-                      <md-button class="md-raised md-primary" ng-click="addContent('highlights')" ng-disabled="activeProject === null" layout="row" layout-align="center center"><i class="material-icons">add</i>&nbsp;Add</md-button>
-                </md-input-container>
-              </div>
-            </md-content>
-          </md-tab>
-
-          <md-tab label="images" md-on-select="onTabChanges('content')">
-            <md-content class="section-wrapper" layout-padding>
-              <md-subheader class="md-primary">
-                <div layout="row" layout-align="space-between center">
-                <span flex></span>
-                <md-button class="md-raised md-primary no-margin" ng-click="showUpload()" ng-disabled="activeProject === null" layout="row" layout-align="center center">&nbsp;&nbsp;<i class="material-icons">add_photo_alternate</i>&nbsp;&nbsp;<span>Add an Image</span>&nbsp;&nbsp;</md-button>
-                </div>
-                </md-subheader>
-                <image-loader project-content="projectContent" active-project="activeProject" time-stamp="timeStamp"></image-loader>
-            </md-content>
-          </md-tab>
-
-          <md-tab label="services" md-on-select="onTabChanges('related')">
-            <md-content class="section-wrapper" layout-padding>
-                <div layout="row" layout-wrap flex>
-                  <div flex="100" ng-repeat="(service, value) in projectRelated track by $index">
-                    <md-checkbox ng-hide="service == 'project_related_site_id' || service == 'project_related_id'" ng-checked="value !== null" ng-click="toggleRelatedCheckbox(service)">
-                     {{ service | servicekey }}
-                    </md-checkbox>
-                  </div>
-                </div>
-            </md-content>
-          </md-tab>
         </md-tabs>
         <div layout="row" layout-align="end end">
           <md-input-container>
-                <md-button class="md-raised md-primary" ng-click="save()" ng-disabled="activeProject === null" layout="row" layout-align="center center"><i class="material-icons" ng-hide="saving">save_alt</i><md-progress-circular class="md-hue-1" ng-show="saving" md-theme="progressTheme" md-diameter="20px"></md-progress-circular><span ng-show="saving">&nbsp;</span>&nbsp;&nbsp;Save</md-button>
+                <md-button class="md-raised md-primary" ng-click="save()" ng-disabled="activeService === null" layout="row" layout-align="center center"><i class="material-icons" ng-hide="saving">save_alt</i><md-progress-circular class="md-hue-1" ng-show="saving" md-theme="progressTheme" md-diameter="20px"></md-progress-circular><span ng-show="saving">&nbsp;</span>&nbsp;&nbsp;Save</md-button>
           </md-input-container>
         </div>
       </div>
@@ -182,6 +144,7 @@ if(!getLogin($db)) {
     <script src="vendor/jquery.simulate.drag-n-drop.js"></script> -->
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>
+  <script src="https://kamilkp.github.io/angular-sortable-view/src/angular-sortable-view.js"></script>
   <script src="js/AngularSortable.js"></script>
   <script src="js/main.js"></script>
   <script src="js/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->

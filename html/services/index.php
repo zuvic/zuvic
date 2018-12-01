@@ -9,10 +9,7 @@ $url = preg_replace(array('/services\//', '/\//'), '', $url);
 
 $service_name = $url[0];
 
-$services_content = [
-  'title' => array(),
-  'content' => array()
-];
+$services_content = [];
 
 $services_projects = array();
 
@@ -46,14 +43,14 @@ try {
   $query->execute(array($service_name));
 
   while($row=$query->fetch(PDO::FETCH_ASSOC)) {
-    $services_content[$row['services_content_type']][] = $row['services_content_value'];
+    $services_content[$row['services_content_idx']][$row['services_content_type']] = $row['services_content_value'];
   }
 } catch (PDOException  $e ) {
   echo "Error: " . $e;
 }
 
 try {
-  $project_service_query = 'Select project_related_site_id from project_related where project_related_' . $services_aliases[$service_name] . ' IS NOT NULL';
+  $project_service_query = 'Select project_related_site_id from project_related where project_related_' . $services_aliases[$service_name] . ' IS NOT NULL ORDER BY project_related_' . $services_aliases[$service_name] . ' = 0, project_related_' . $services_aliases[$service_name] . ' asc';
   $projects_query = $db->prepare($project_service_query);
   $projects_query->execute();
 
@@ -155,9 +152,9 @@ try {
             </div>
             <div class="column content">
                 <?php 
-                  for($i = 0; $i < count($services_content['content']); $i++) {
-                    echo '<div class="title">' . $services_content['title'][$i] . '</div>';
-                    echo '<div class="sub-title">' . $services_content['content'][$i] . '</div>';
+                  for($i = 0; $i < count($services_content); $i++) {
+                    echo '<div class="title">' . $services_content[$i]['title'] . '</div>';
+                    echo '<div class="sub-title">' . $services_content[$i]['content'] . '</div>';
                   }
                 ?>
             </div>

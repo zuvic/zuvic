@@ -1,8 +1,13 @@
 angular
-  .module('AngularCMS', ['ngMaterial', 'ngMessages', 'ng-sortable', 'ngFileUpload', 'ui.router', 'ui.router.state.events'])
+  .module('AngularCMS', ['ngMaterial', 'ngMessages', 'ng-sortable', 'angular-sortable-view', 'ngFileUpload', 'ui.router', 'ui.router.state.events'])
   .filter('servicekey', function() {
     return function(input) {
       return (!!input) ? input.replace(/project_related_/, '').charAt(0).toUpperCase() + input.replace(/project_related_/, '').substr(1).toLowerCase() : '';
+    }
+  })
+  .filter('capitalize', function() {
+    return function(input) {
+      return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
     }
   })
   .config(function ($mdThemingProvider) {
@@ -397,6 +402,32 @@ angular
         method: 'POST',
         url: 'api/',
         data: { type: 'project', method: 'update_images', projID: projID, order: order }
+      });
+    };
+
+    // Service Page API
+
+    this.getServiceContent = function (name) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'service', method: 'content', name: name }
+      });
+    };
+
+    this.getServiceProjects = function (name) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'service', method: 'projects', name: name }
+      });
+    };
+
+    this.saveServiceContent = function (name, content) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'service', method: 'save_content', name: name, content: content }
       });
     };
 
@@ -884,6 +915,7 @@ angular
     $scope.saving = false;
     $scope.timeStamp = new Date().getTime();
     $scope.projectRelated = null;
+    $scope.pendingUploads = {};
     $scope.projectContent = {
       title: [''],
       subtitle: [''],
@@ -892,6 +924,11 @@ angular
       highlights: [],
       solutions: []
     }
+
+
+    $scope.$watch(function () { return $scope.pendingUploads; }, function (newVal, oldVal) {
+      console.log('Project level:', newVal);
+    });
 
     // Load available projects menu
     $api.getProjectSite().then(function (response) {
@@ -1063,6 +1100,7 @@ angular
 
     // Handles file uploading
     $scope.showUpload = function () {
+      console.log('Func level:', $scope.pendingUploads);
       $mdDialog.show({
         controller: 'UploadCtrl',
         templateUrl: 'upload.tmpl.html',
@@ -1076,7 +1114,108 @@ angular
 
   }])
   .controller('ServicesCtrl', ['$scope', '$mdDialog', 'Upload', '$timeout', 'Toast', 'API', function ($scope, $mdDialog, Upload, $timeout, Toast, $api) {
+    $scope.activeService = null;
+    $scope.serviceContent = {};
+    $scope.saving = false;
 
+    $scope.serviceProjects = [];
+
+    // Watch for project switching
+    $scope.$watch('activeService', function (newVal, oldVal) {
+      if (newVal != '' && newVal !== null) {
+        $api.getServiceContent(newVal).then(function (response) {
+          $scope.serviceContent = response.data.data;
+
+          $api.getServiceProjects(newVal).then(function (response) {
+            $scope.serviceProjects = response.data.data;
+          }, function (response) {
+            if(response.data.msg != '') {
+              Toast.showToast('error', response.data.msg);
+            } else {
+              Toast.showToast('error', 'Could not load projects for service: ' + newVal.charAt(0).toUpperCase(), response.data.data);
+            }
+          });
+        }, function (response) {        
+          if(response.data.msg != '') {
+            Toast.showToast('error', response.data.msg);
+          } else {
+            Toast.showToast('error', 'Could not load content for service: ' + newVal.charAt(0).toUpperCase(), response.data.data);
+          }
+        });
+      }
+    });
+
+    /*
+     * Tab handing
+     */
+    $scope.onTabChanges = function(currentTab){
+      $scope.activeTab = currentTab;
+    };
+
+    $scope.save = function () {
+      switch($scope.activeTab) {
+        case 'content':
+          $scope.saveContent();
+          break;
+        case 'related':
+          $scope.saveRelated();
+          break;
+        default:
+          Toast.showToast('error', 'Error saving changes');
+      }
+    }
+
+    $scope.addContent = function() {
+      $scope.serviceContent.push({'title': '', 'content': ''});
+    }
+
+    $scope.deleteContent = function(idx) {
+      $scope.serviceContent[idx]['delete'] = true;
+
+      $scope.saveContent();
+    }
+
+    $scope.saveContent = function () {
+      $scope.saving = true;
+
+      $timeout(function () {
+        $api.saveServiceContent($scope.activeService, $scope.serviceContent).then(function (response) {
+          $scope.saving = false;
+          $scope.serviceContent = response.data.data;
+        }, function (response) {
+          $scope.saving = false;
+          if(response.data.msg != '') {
+            Toast.showToast('error', response.data.msg);
+          } else {
+            Toast.showToast('error', 'Error updating service content', response.data.data);
+          }
+        });
+      }, 500);
+    }
+
+    $scope.onUpdate = function($evt) {
+      // $timeout(function () {
+      //   API.updateImages($scope.activeProject, $evt.models).then(function (response) {
+      //     $scope.projectContent = response.data.data;
+      //     $scope.timeStamp = new Date().getTime();
+      //   }, function (response) {
+      //     if(response.data.msg != '') {
+      //       Toast.showToast('error', response.data.msg);
+      //     } else {
+      //       Toast.showToast('error', 'Could not update image order', response.data.data);
+      //     }
+      //   });
+      // });
+      console.log('stuff');
+    }
+
+    $scope.sortableConf = {
+      animation: 200,
+      // forceFallback: true,
+      onStart: $scope.onStart,
+      onMove: $scope.onMove,
+      onUpdate: $scope.onUpdate,
+    }
   }])
   .controller('dialogProjectCtrl', ['$scope', '$mdDialog', 'Upload', '$timeout', 'Toast', 'API', function ($scope, $mdDialog, Upload, $timeout, Toast, $api) {
       $scope.working = false;
@@ -1154,6 +1293,8 @@ angular
         $mdDialog.cancel();
       };
 
+      $scope.pendingUploads[0] = 2;
+
       /*
       *  NG File Uploader Stuff
       */
@@ -1165,7 +1306,7 @@ angular
         }
       };
 
-      $scope.upload = function (file) {
+      $scope.upload = function (file, idx) {
         $scope.uploading = true;
 
         Upload.upload({
@@ -1174,18 +1315,21 @@ angular
           headers: { 'Content-Type': false, 'Cache-Control': 'no-cache' },
           data: { 'file': file, 'method': 'upload', 'type': 'project', 'projID': $scope.activeProject }
         }).then(function (response) {
+          $scope.projectContent = response.data.data;
+          $scope.pendingUploads[idx] = 50;
           $timeout(function () {
             $scope.uploading = false;
             $scope.hide();
             $scope.files = null;
-            $scope.projectContent = response.data.data;
             $scope.timeStamp = new Date().getTime();
+            $scope.pendingUploads[idx] = 100
           }, 500);
         }, function (resp) {
           $timeout(function () {
             $scope.uploading = false;
             $scope.hide();
             $scope.files = null;
+            $scope.pendingUploads[idx] = null
             if(response.data.msg != '') {
               Toast.showToast('error', response.data.msg);
             } else {
@@ -1194,15 +1338,32 @@ angular
           }, 500);
         }, function (evt) {
           $scope.uploading = true;
-          $scope.percentage = parseInt(100.0 * evt.loaded / evt.total);
+          // $scope.pendingUpload[idx] = parseInt(100.0 * evt.loaded / evt.total);
+          // console.log($scope.pendingUpload[idx]);
         });
       };
 
       // Handling multiple files
       $scope.uploadMultiple = function (files) {
+        console.log($scope.pendingUploads, $scope.projectContent.photos);
         if (files && files.length) {
-          $scope.upload(files);
+          if(files.length > 1) {
+            idx = [];
+            angular.forEach(files, function (value, key) {
+              $scope.projectContent.photos.value = String(parseInt($scope.projectContent.photos.value) + 1);
+              idx.push(parseInt($scope.projectContent.photos.value));
+              $scope.pendingUploads[parseInt($scope.projectContent.photos.value)] = 0
+            });
+            angular.forEach(files, function (file, key) {
+              $scope.upload(file, idx[key]);
+            });
+          } else {
+            $scope.projectContent.photos.value = String(parseInt($scope.projectContent.photos.value) + 1);
+            $scope.pendingUploads[parseInt($scope.projectContent.photos.value)] = 0
+            $scope.upload(files, parseInt($scope.projectContent.photos.value));
+          }
         }
+        console.log($scope.pendingUploads, parseInt($scope.projectContent.photos.value));
       }
   })
   .controller('ToastCtrl', function ($scope, $mdToast, $mdDialog, msg, details) {
@@ -1246,10 +1407,12 @@ angular
       scope: {
         projectContent: '=',
         activeProject: '=',
+        pendingUploads: '=',
         timeStamp: '='
       },
       template: `<ul ng-sortable="sortableConf" layout="row" layout-wrap>
                   <li ng-repeat="photo in photos" class="unselectable projectImage" style="background-image: url('/images/{{ activeProject }}/{{ $index + 1 }}.jpg?{{ timeStamp }}')" flex="33">
+                    <md-progress-linear class="upload-progress" md-mode="determinate" value="{{ pendingUpload[$index + 1] }}"></md-progress-linear>
                     <md-button class="md-fab md-mini md-warn delete-image" ng-click="deleteImage($index)" layout="row" layout-align="center center">
                       <md-progress-circular class="md-hue-1" ng-show="delete[$index]" md-theme="progressTheme" md-diameter="20px"></md-progress-circular>
                       <i class="material-icons" ng-hide="delete[$index]">close</i>
@@ -1272,6 +1435,9 @@ angular
           }
         });
 
+        $scope.$watch(function () { return $scope.pendingUploads; }, function (newVal, oldVal) {
+            console.log('Img:', newVal);
+        });
 
         $scope.onUpdate = function($evt) {
           $timeout(function () {
