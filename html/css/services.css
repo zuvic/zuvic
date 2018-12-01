@@ -45,6 +45,7 @@
   font-size: 14px;
   font-family: 'Roboto';
   margin: 5px 10px;
+  white-space: pre;
 }
 
 /* Projects */
