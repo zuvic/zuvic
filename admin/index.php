@@ -77,6 +77,7 @@ if(!isset($_SESSION)) {
     <script src="vendor/jquery.simulate.drag-n-drop.js"></script> -->
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>
+  <script src="https://kamilkp.github.io/angular-sortable-view/src/angular-sortable-view.js"></script>
   <script src="js/AngularSortable.js"></script>
   <script src="js/main.js"></script>
   <script src="js/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
