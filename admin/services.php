@@ -36,7 +36,7 @@ if(!getLogin($db)) {
             <label><em>Service</em></label>
             <md-select ng-model="activeService">
               <md-option></md-option>
-              <md-option ng-repeat="service in ['civil', 'environmental', 'survey', 'planning', 'structural', 'transport', 'bridges', 'utility', 'water', 'construction', 'permitting']" ng-value="service">
+              <md-option ng-repeat="service in ['civil', 'environmental', 'survey', 'permitting', 'transport', 'construction', 'water']" ng-value="service">
                 {{service | capitalize}}
               </md-option>
             </md-select>
