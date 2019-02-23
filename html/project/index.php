@@ -222,18 +222,31 @@ try {
                     </ul>
                 </div>
             </div>
+<?php
+    if(count($project_content['highlights']) >= 1) {
+        echo <<<HTML
             <div class="text-wrapper">
                 <div class="title">Highlights</div>
                 <div class="text">
                     <ul>
+HTML;
+    }
+?>
+
                         <?php 
                                 foreach($project_content['highlights'] as $challenge) {
                                     echo "<li>$challenge</li>";
                                 }    
                             ?>
+<?php
+    if(count($project_content['highlights']) >= 1) {
+        echo <<<HTML
                     </ul>
                 </div>
             </div>
+HTML;
+    }
+?>
         </div>
     </div>
 
