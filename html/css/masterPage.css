@@ -339,6 +339,44 @@ li {
 }
 
 
+/* Callouts Content */
+.row.callouts {
+  background: #f7f7f7;
+  padding: 50px 0;
+}
+
+.row.callouts .inner-wrapper {
+  justify-content: space-around;
+}
+
+.row.callouts .text-wrapper {
+  font-family: 'Oswald';
+  text-align: center;
+  width: 33%;
+  padding: 0 25px;
+}
+
+.row.callouts .text-wrapper .title {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--blue);
+}
+
+.row.callouts .text-wrapper .text {
+  color: var(--grey);
+  font-weight: 600;
+  font-size: 13px;
+  font-family: 'Roboto';
+  text-align: left;
+}
+
+.row.callouts .text-wrapper ul li {
+  line-height: 23px;
+  margin: 20px 0;
+  font-weight: 400;
+}
+
+
 
 /*------------------------------------*\
     MATERIAL PHOTO GALLERY

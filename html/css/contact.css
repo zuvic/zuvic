@@ -1,0 +1,203 @@
+.row.map {
+  /* background: url("/images/contact-map.jpg"); */
+  height: 400px;
+}
+
+.row .text-wrapper {
+  width: 100%;
+  color: #fff;
+}
+
+.row .text-wrapper .title {
+  text-align: center;
+}
+
+.row .text-wrapper .sub-title {
+  text-align: center;
+}
+
+.row.banner {
+  height: 400px;
+}
+
+.row.job .inner-wrapper {
+  padding: 50px 0; 
+  border-bottom: 1px solid #ccc;
+}
+
+.row.job:last-of-type .inner-wrapper {
+  border-bottom: none;
+}
+
+.row.job .header {
+  align-items: start;
+  flex: 1 1 40%;
+}
+
+.row.job .content {
+  flex: 1 1 60%;
+}
+
+.row.job .content .title {
+  font-size: 18px;
+}
+
+.row.job img {
+  margin: 5px 10px;
+}
+
+.row.job .title {
+  color: var(--blue);
+  font-family: 'Oswald';
+  font-size: 22px;
+  text-align: left;
+  margin: 5px 10px;
+}
+
+.row.job .sub-title {
+  color: var(--grey);
+  line-height: 27px;
+  font-size: 14px;
+  font-family: 'Roboto';
+  margin: 5px 10px;
+}
+
+.row.callouts {
+  background: #fff;
+}
+
+.row.callouts .text-wrapper {
+  color: var(--blue);
+  width: 50%;
+  padding: 0 45px;
+}
+
+
+#phone-icon {
+  width: 60px;
+  text-align: right;
+  padding-right: 21px;
+}
+
+.phone-icon {
+  text-align: right;
+}
+
+#email-icon {
+  width: 60px;
+  text-align: left;
+  padding-left: 30px;
+}
+
+.email-icon {
+  text-align: left;
+}
+
+/* Google Maps Styling */
+#map {
+  height: 400px;  /* The height is 400 pixels */
+  width: 100%;  /* The width is the width of the web page */
+ }
+
+#mapMarker {
+  /* background: #940f0d; */
+  width: 300px;
+}
+
+/* The popup bubble styling. */
+.popup-bubble {
+  /* Position the bubble centred-above its parent. */
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -100%);
+  /* Style the bubble. */
+  background-color:#940f0dce;
+  color: #fff;
+  padding: 25px;
+  font-size: 16px;
+  border-radius: 5px;
+  font-family: sans-serif;
+  overflow-y: auto;
+  max-height: 300px;
+  box-shadow: 0px 2px 10px 1px rgba(0,0,0,0.1);
+}
+/* The parent of the bubble. A zero-height div at the top of the tip. */
+.popup-bubble-anchor {
+  /* Position the div a fixed distance above the tip. */
+  position: absolute;
+  width: 100%;
+  bottom: /* TIP_HEIGHT= */ 8px;
+  left: 0;
+}
+/* This element draws the tip. */
+.popup-bubble-anchor::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* Center the tip horizontally. */
+  transform: translate(-50%, 0);
+  /* The tip is a https://css-tricks.com/snippets/css/css-triangle/ */
+  width: 0;
+  height: 0;
+  /* The tip is 8px high, and 12px wide. */
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: /* TIP_HEIGHT= */ 8px solid #940f0dce;
+}
+/* JavaScript will position this div at the bottom of the popup tip. */
+.popup-container {
+  cursor: auto;
+  height: 0;
+  position: absolute;
+  /* The max width of the info window. */
+  width: 300px;
+}
+
+.marker {
+  margin: 0 auto;
+  width: 100%;
+}
+
+.popup-title {
+  display: inline-block;
+  font-family: 'Roboto';
+  vertical-align: middle;
+  font-weight: bold;
+  margin: 0 auto;
+}
+
+.popup-content {
+  font-family: 'Roboto';
+  font-size: 14px;
+  margin: 0 auto;
+  display: block;
+  line-height: 20px;
+  width: 100%;
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+#map-contact-button {
+  width: 120px;
+  margin: 0 auto;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: #fff;
+  color: #940f0dce;
+  border: 1px solid #fff;
+  padding: 15px 36px;
+  border-radius: 3px;
+  
+  -webkit-transition: all 0.1s;
+  -moz-transition: all 0.1s;
+  -o-transition: all 0.1s;
+  transition: all 0.1s;
+}
+
+#map-contact-button:hover, #map-contact-button.hover {
+  background: transparent;
+  color: #fff;
+}
