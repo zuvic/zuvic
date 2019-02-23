@@ -277,7 +277,9 @@ HTML;
 
     <div id="contact-section">
         <div class="header">Need a solution?</div>
-        <button type="button">Let's Connect.</button>
+        <a href="/contact/">
+            <button type="button">Let's Connect.</button>
+        </a>
     </div>
 
     <div id="footer">
