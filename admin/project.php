@@ -36,7 +36,7 @@ if(!getLogin($db)) {
             <label><em>Project</em></label>
             <md-select ng-model="activeProject">
               <md-option></md-option>
-              <md-option ng-repeat="project in projects" ng-value="project.id">
+              <md-option ng-repeat="project in projects | orderBy:'name'" ng-value="project.id">
                 {{project.name}}
               </md-option>
             </md-select>
