@@ -3,7 +3,7 @@ $(document).ready(function() {
 
   var currentSlide = 0;
   var quoteIndex = 0;
-  var slideTitles = ['site/civil', 'environmental', 'water resources', 'transportation', 'construction', 'permitting', 'surveying'];
+  var slideTitles = ['SITE/CIVIL', 'TRANSPORTATION', 'CONSTRUCTION', 'PERMITTING', 'SITE ASSESSMENTS', 'REMIDIATION', 'HAZARDOUS MATERIALS', 'ASTs/USTs'];
 
   var quoteAuthor = ['Goodwin College', 'CDECCA'  ];
   

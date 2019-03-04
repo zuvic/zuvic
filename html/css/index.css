@@ -269,7 +269,6 @@
   font-family: 'Oswald';
   font-size: 30px;
   height: 70px;
-  text-transform: uppercase;
   font-weight: 100; 
   display: flex;
   color: var(--blue);
@@ -285,4 +284,30 @@
   -moz-transition: all 0.2s;
   -o-transition: all 0.2s;
   transition: all 0.2s;
+}
+
+/* Slider */
+
+.slider-overlay.remidiation {
+  position: absolute;
+  transform: rotate(-90deg) translate(-306px, -2px);
+  font-family: 'Oswald';
+  color: #fff;
+  font-size: 30px;
+}
+
+.slider-overlay.hazardous {
+  position: absolute;
+  transform: rotate(-90deg) translate(-306px, -2px);
+  font-family: 'Oswald';
+  color: #fff;
+  font-size: 30px;
+}
+
+.slider-overlay.env {
+  position: absolute;
+  transform: rotate(-90deg) translate(-285px, 63px);
+  font-family: 'Oswald';
+  color: #fff;
+  font-size: 30px;
 }

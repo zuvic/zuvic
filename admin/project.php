@@ -143,7 +143,7 @@ if(!getLogin($db)) {
           </md-tab>
 
           <md-tab label="images" md-on-select="onTabChanges('content')">
-            <md-content class="section-wrapper" layout-padding>
+            <md-content class="section-wrapper">
               <md-subheader class="md-primary">
                 <div layout="row" layout-align="space-between center">
                 <span flex></span>

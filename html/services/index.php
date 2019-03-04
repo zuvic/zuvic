@@ -153,8 +153,7 @@ try {
             <div class="column content">
                 <?php 
                   for($i = 0; $i < count($services_content); $i++) {
-                    echo '<div class="title">' . $services_content[$i]['title'] . '</div>';
-                    echo '<div class="sub-title">' . $services_content[$i]['content'] . '</div>';
+                    echo '<div>' . $services_content[$i]['content'] . '</div>';
                   }
                 ?>
             </div>

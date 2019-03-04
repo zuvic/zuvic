@@ -75,9 +75,12 @@ if(!isset($_SESSION)) {
     <script src="vendor/jquery.simulate.js"></script>
     <script src="vendor/jquery.simulate.ext.js"></script>
     <script src="vendor/jquery.simulate.drag-n-drop.js"></script> -->
+  
+  <script src="//cloud.tinymce.com/5/tinymce.min.js?apiKey=71egil4mb6tjwbu71s3vi3mpwrlaodf8tpnr74vwqucoayjx"></script>
+  <script type="text/javascript" src="bower_components/angular-ui-tinymce/src/tinymce.js"></script>
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>
-  <script src="https://kamilkp.github.io/angular-sortable-view/src/angular-sortable-view.js"></script>
+  <!-- <script src="https://kamilkp.github.io/angular-sortable-view/src/angular-sortable-view.js"></script> -->
   <script src="js/AngularSortable.js"></script>
   <script src="js/main.js"></script>
   <script src="js/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->

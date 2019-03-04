@@ -72,25 +72,19 @@ try {
 try {
 
     $primary = '';
-    $secondary = '( ';
 
     foreach($project_related as $related_key => $related) {
         if($related_key == 'project_related_id' || $related_key == 'project_related_site_id') continue;
 
         if($project_related[$related_key] != null) {
             $primary .= $related_key . ' IS NOT NULL AND ';
-        } else {
-            if($secondary !== '( ') {
-                $secondary .= 'OR ';
-            }
-            $secondary .= $related_key . ' IS NOT NULL ';
         }
 
     }
 
-    $secondary .= ')';
+    $primary = substr($primary, 0, -5);
 
-    $stmt = 'Select * from project_related where ' . $primary . $secondary;
+    $stmt = 'Select * from project_related where ' . $primary;
     $query = $db->prepare($stmt);
     $query->execute();
         
@@ -291,9 +285,9 @@ HTML;
     </div>
 </body>
 
-<script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/45226/material-photo-gallery.min.js"></script>
+<script src="/js/material-photo-gallery.min.js"></script>
 <script>
-    var gallery = generateProjImgs(<?php echo $project_site_id ?>, <?php echo(int) $project_content['photos'][0] ?>);
+    var gallery = generateProjImgs(<?php echo $project_site_id ?>, <?php echo(int) isset($project_content['photos']) && sizeof($project_content['photos']) > 0 ? $project_content['photos'][0] : 0 ?>);
 </script>
 
 </html>

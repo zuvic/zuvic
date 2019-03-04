@@ -17,7 +17,7 @@ $services_aliases = [
   'environmental' => 'enviro',
   'permitting' => 'perm',
   'water' => 'water',
-  'transport' => 'transport',
+  'transportation' => 'transport',
   'civil' => 'civil',
   'survey' => 'survey',
   'planning' => 'planning',
@@ -976,16 +976,18 @@ function getRelatedProjects($db, $projectID) {
 
 function getServiceContent(PDO $db, String $name) {
   global $response;
-  $service_content = array();
+  global $services_aliases;
+  $service_content = array('id' => null, 'content' => '', 'delete' => false);
   $success = false;
 
   try {
     $query = $db->prepare('Select * from services_content where services_content_page = ?');
-    $success = $query->execute(array($name));
+    $success = $query->execute(array($services_aliases[$name]));
   
     while($row = $query->fetch(PDO::FETCH_ASSOC)) {
-      $service_content[$row['services_content_idx']][$row['services_content_type']] = $row['services_content_value'];
-      $service_content[$row['services_content_idx']]['delete'] = false;
+      $service_content[$row['services_content_type']] = $row['services_content_value'];
+      $service_content['id'] = $row['services_content_id'];
+      $service_content['delete'] = false;
     }
   } catch (PDOException  $e ) {
     http_response_code(500);
@@ -1034,27 +1036,27 @@ function getServiceProjects(PDO $db, String $service_name) {
 }
 
 function saveServiceContent(PDO $db, String $name, Array $content) {
+  global $services_aliases;
   $success = false;
 
   try {
-    foreach ($content as $idx => $content) {
+    // foreach ($content as $idx => $content) {
       if ($content['delete'] == False) {
-        $query = $db->prepare('INSERT INTO services_content (services_content_id, services_content_type, services_content_page, services_content_value, services_content_idx) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE services_content_value = ?');
-        $success = $query->execute(array(
-          null,
-          'title',
-          $name,
-          $content['title'],
-          $idx,
-          $content['title'],
-        ));
+        $query = $db->prepare('INSERT INTO services_content (services_content_id, services_content_type, services_content_page, services_content_value, services_content_idx) VALUES (?,?,?,?,0) ON DUPLICATE KEY UPDATE services_content_value = ?');
+        // $success = $query->execute(array(
+        //   null,
+        //   'title',
+        //   $name,
+        //   $content['title'],
+        //   $idx,
+        //   $content['title'],
+        // ));
 
         $success = $query->execute(array(
-          null,
+          $content['id'],
           'content',
-          $name,
+          $services_aliases[$name],
           $content['content'],
-          $idx,
           $content['content'],
         ));
       } else {
@@ -1075,9 +1077,9 @@ function saveServiceContent(PDO $db, String $name, Array $content) {
       if(!$success) {
         http_response_code(500);
         $response['msg'] = 'Error updating services content';
-        break;
+        // break;
       }
-    }
+    // }
 
   } catch (PDOException  $e ) {
     http_response_code(500);

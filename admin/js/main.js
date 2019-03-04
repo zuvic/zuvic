@@ -1,5 +1,5 @@
 angular
-  .module('AngularCMS', ['ngMaterial', 'ngMessages', 'ng-sortable', 'angular-sortable-view', 'ngFileUpload', 'ui.router', 'ui.router.state.events'])
+  .module('AngularCMS', ['ngMaterial', 'ngMessages', 'ng-sortable', 'ngFileUpload', 'ui.router', 'ui.router.state.events', 'ui.tinymce'])
   .filter('servicekey', function() {
     return function(input) {
       return (!!input) ? input.replace(/project_related_/, '').charAt(0).toUpperCase() + input.replace(/project_related_/, '').substr(1).toLowerCase() : '';
@@ -1115,8 +1115,9 @@ angular
   }])
   .controller('ServicesCtrl', ['$scope', '$mdDialog', 'Upload', '$timeout', 'Toast', 'API', function ($scope, $mdDialog, Upload, $timeout, Toast, $api) {
     $scope.activeService = null;
-    $scope.serviceContent = {};
+    $scope.serviceContent = {'id': 0, 'content': '', 'delete': false};
     $scope.saving = false;
+    $scope.contentEditor = null;
 
     $scope.serviceProjects = [];
 
@@ -1165,6 +1166,17 @@ angular
       }
     }
 
+    $scope.tinymceOptions = {
+      menubar: false,
+      plugins: "lists",
+      block_formats: 'Header=h3;Sub-Header=h4;Text=p',
+      toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+      content_css: [
+        '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+        'css/services_mock.css'
+      ]
+    };
+
     $scope.addContent = function() {
       $scope.serviceContent.push({'title': '', 'content': ''});
     }
@@ -1181,7 +1193,8 @@ angular
       $timeout(function () {
         $api.saveServiceContent($scope.activeService, $scope.serviceContent).then(function (response) {
           $scope.saving = false;
-          $scope.serviceContent = response.data.data;
+          console.log(tinyMCE.get('content'));
+          // $scope.serviceContent = response.data.data;
         }, function (response) {
           $scope.saving = false;
           if(response.data.msg != '') {
@@ -1412,7 +1425,6 @@ angular
       },
       template: `<ul ng-sortable="sortableConf" layout="row" layout-wrap>
                   <li ng-repeat="photo in photos" class="unselectable projectImage" style="background-image: url('/images/{{ activeProject }}/{{ $index + 1 }}.jpg?{{ timeStamp }}')" flex="33">
-                    <md-progress-linear class="upload-progress" md-mode="determinate" value="{{ pendingUpload[$index + 1] }}"></md-progress-linear>
                     <md-button class="md-fab md-mini md-warn delete-image" ng-click="deleteImage($index)" layout="row" layout-align="center center">
                       <md-progress-circular class="md-hue-1" ng-show="delete[$index]" md-theme="progressTheme" md-diameter="20px"></md-progress-circular>
                       <i class="material-icons" ng-hide="delete[$index]">close</i>
