@@ -265,7 +265,7 @@ SQL
                     if($max >= 11) continue;
                     $url = '/project/' . implode('-', explode(' ', $service['title'])) . '/';
 
-                    echo '<a href="' . $url . '"><div class="project" style="background-image: url(\'/images/'.$service['id'].'/1.jpg\'), url(\'/images/blank.jpg\')"><div class="caption">'.$service['title'].'</div></div></a>';
+                    echo '<a href="' . $url . '"><div class="project" style="background-image: url(\'/images/'.$service['project_id'].'/1.jpg\'), url(\'/images/blank.jpg\')"><div class="caption">'.$service['title'].'</div></div></a>';
 
                     $max++;
                 }    
