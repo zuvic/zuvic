@@ -1180,7 +1180,6 @@ angular
           $scope.serviceContent = response.data.data;
 
           $api.getServiceProjects(newVal).then(function (response) {
-            console.log(response.data.data == null);
             $scope.serviceProjects = response.data.data == null ? [] : response.data.data;
             $api.getServiceRelated(newVal).then(function (response) {
               $timeout(function() {
@@ -1227,6 +1226,9 @@ angular
           $scope.saveContent();
           break;
         case 'related':
+          $scope.saveRelated();
+          break;
+        case 'order':
           $scope.saveRelated();
           break;
         default:
@@ -1302,6 +1304,10 @@ angular
       angular.forEach($scope.serviceProjects, function(value, key) {
         value.idx = (key + 1);
       });
+    }
+
+    $scope.onStart = function($evt) {
+      $scope.onUpdate();
     }
 
     $scope.sortableConf = {
