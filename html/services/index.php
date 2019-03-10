@@ -8,6 +8,7 @@ preg_match('/(?:services)(.*$)/', $_SERVER['REQUEST_URI'], $url);
 $url = preg_replace(array('/services\//', '/\//'), '', $url);
 
 $service_name = $url[0];
+$servive_id = null;
 
 $services_content = [];
 
@@ -39,8 +40,19 @@ try {
 }
 
 try {
-  $query = $db->prepare('Select * from services_content where services_content_page=?');
-  $query->execute(array($service_name));
+    $query = $db->prepare('Select * from services_site where services_site_name=?');
+    $query->execute(array($service_name));
+  
+    while($row=$query->fetch(PDO::FETCH_ASSOC)) {
+      $service_id = $row['services_site_id'];
+    }
+  } catch (PDOException  $e ) {
+    echo "Error: " . $e;
+  }
+
+try {
+  $query = $db->prepare('Select * from services_content where services_content_site_id=?');
+  $query->execute(array($service_id));
 
   while($row=$query->fetch(PDO::FETCH_ASSOC)) {
     $services_content[$row['services_content_idx']][$row['services_content_type']] = $row['services_content_value'];
@@ -49,17 +61,98 @@ try {
   echo "Error: " . $e;
 }
 
+$service_related_cats = [];
+
 try {
-  $project_service_query = 'Select project_related_site_id from project_related where project_related_' . $services_aliases[$service_name] . ' IS NOT NULL ORDER BY project_related_' . $services_aliases[$service_name] . ' = 0, project_related_' . $services_aliases[$service_name] . ' asc';
-  $projects_query = $db->prepare($project_service_query);
-  $projects_query->execute();
+    $service_query = $db->prepare('Select * from services_related where services_related_site_id = ?');
+    $success = $service_query->execute(array($service_id));
+  
+    if($success) {
+      while($row=$service_query->fetch(PDO::FETCH_ASSOC)) {
+        foreach($row as $cat => $val) {
+          if($cat == 'services_related_id' || $cat == 'services_related_site_id') continue;
 
-  while($row=$projects_query->fetch(PDO::FETCH_ASSOC)) {
-    $nested_query = $db->prepare('Select project_site_name from project_site where project_site_id = ?');
-    $nested_query->execute(array($row['project_related_site_id']));
+          if((int) $val > 0) $service_related_cats[] = str_replace("services_related_", "", $cat);
+        }
+      }
+    }
+  } catch (PDOException  $e ) {
+    echo "Error: " . $e;
+  }
 
-    while($nested_row = $nested_query->fetch(PDO::FETCH_ASSOC)) {
-        $services_projects[] = array('id' => $row['project_related_site_id'], 'title' => $nested_row['project_site_name']);
+
+$order_sql = '';
+$service_projects = array();
+$success = false;
+
+$service_sql = '';
+
+  $service_sql .= in_array('survey', $service_related_cats) ? ' pr.project_related_survey > 0 AND ' : ' pr.project_related_survey <= 0 AND ';
+  $service_sql .= in_array('planning', $service_related_cats) ? ' pr.project_related_planning > 0 AND ' : ' pr.project_related_planning <= 0 AND ';
+  $service_sql .= in_array('civil', $service_related_cats) ? ' pr.project_related_civil > 0 AND ' : ' pr.project_related_civil <= 0 AND ';
+  $service_sql .= in_array('transport', $service_related_cats) ? ' pr.project_related_transport > 0 AND ' : ' pr.project_related_transport <= 0 AND ';
+  $service_sql .= in_array('structural', $service_related_cats) ? ' pr.project_related_structural > 0 AND ' : ' pr.project_related_structural <= 0 AND ';
+  $service_sql .= in_array('bridges', $service_related_cats) ? ' pr.project_related_bridges > 0 AND ' : ' pr.project_related_bridges <= 0 AND ';
+  $service_sql .= in_array('utility', $service_related_cats) ? ' pr.project_related_utility > 0 AND ' : ' pr.project_related_utility <= 0 AND ';
+  $service_sql .= in_array('water', $service_related_cats) ? ' pr.project_related_water > 0 AND ' : ' pr.project_related_water <= 0 AND ';
+  $service_sql .= in_array('const', $service_related_cats) ? ' pr.project_related_const > 0 AND ' : ' pr.project_related_const <= 0 AND ';
+  $service_sql .= in_array('perm', $service_related_cats) ? ' pr.project_related_perm > 0 AND ' : ' pr.project_related_perm <= 0 AND ';
+  $service_sql .= in_array('esa', $service_related_cats) ? ' pr.project_related_esa > 0 AND ' : ' pr.project_related_esa <= 0 AND ';
+  $service_sql .= in_array('sgc', $service_related_cats) ? ' pr.project_related_sgc > 0 AND ' : ' pr.project_related_sgc <= 0 AND ';
+  $service_sql .= in_array('rap', $service_related_cats) ? ' pr.project_related_rap > 0 AND ' : ' pr.project_related_rap <= 0 AND ';
+  $service_sql .= in_array('design_remid', $service_related_cats) ? ' pr.project_related_design_remid > 0 AND ' : ' pr.project_related_design_remid <= 0 AND ';
+  $service_sql .= in_array('hazmat', $service_related_cats) ? ' pr.project_related_hazmat > 0 AND ' : ' pr.project_related_hazmat <= 0 AND ';
+  $service_sql .= in_array('exp_test', $service_related_cats) ? ' pr.project_related_exp_test > 0 AND ' : ' pr.project_related_exp_test <= 0 AND ';
+  $service_sql .= in_array('ast_ust', $service_related_cats) ? ' pr.project_related_ast_ust > 0 ' : ' pr.project_related_ast_ust <= 0 ';
+
+ $order_sql .= in_array('survey', $service_related_cats) ? ' op.order_project_survey > 0 AND ' : ' op.order_project_survey <= 0 AND ';
+ $order_sql .= in_array('planning', $service_related_cats) ? ' op.order_project_planning > 0 AND ' : ' op.order_project_planning <= 0 AND ';
+ $order_sql .= in_array('civil', $service_related_cats) ? ' op.order_project_civil > 0 AND ' : ' op.order_project_civil <= 0 AND ';
+ $order_sql .= in_array('transport', $service_related_cats) ? ' op.order_project_transport > 0 AND ' : ' op.order_project_transport <= 0 AND ';
+ $order_sql .= in_array('structural', $service_related_cats) ? ' op.order_project_structural > 0 AND ' : ' op.order_project_structural <= 0 AND ';
+ $order_sql .= in_array('bridges', $service_related_cats) ? ' op.order_project_bridges > 0 AND ' : ' op.order_project_bridges <= 0 AND ';
+ $order_sql .= in_array('utility', $service_related_cats) ? ' op.order_project_utility > 0 AND ' : ' op.order_project_utility <= 0 AND ';
+ $order_sql .= in_array('water', $service_related_cats) ? ' op.order_project_water > 0 AND ' : ' op.order_project_water <= 0 AND ';
+ $order_sql .= in_array('const', $service_related_cats) ? ' op.order_project_const > 0 AND ' : ' op.order_project_const <= 0 AND ';
+ $order_sql .= in_array('perm', $service_related_cats) ? ' op.order_project_perm > 0 AND ' : ' op.order_project_perm <= 0 AND ';
+ $order_sql .= in_array('esa', $service_related_cats) ? ' op.order_project_esa > 0 AND ' : ' op.order_project_esa <= 0 AND ';
+ $order_sql .= in_array('sgc', $service_related_cats) ? ' op.order_project_sgc > 0 AND ' : ' op.order_project_sgc <= 0 AND ';
+ $order_sql .= in_array('rap', $service_related_cats) ? ' op.order_project_rap > 0 AND ' : ' op.order_project_rap <= 0 AND ';
+ $order_sql .= in_array('design_remid', $service_related_cats) ? ' op.order_project_design_remid > 0 AND ' : ' op.order_project_design_remid <= 0 AND ';
+ $order_sql .= in_array('hazmat', $service_related_cats) ? ' op.order_project_hazmat > 0 AND ' : ' op.order_project_hazmat <= 0 AND ';
+ $order_sql .= in_array('exp_test', $service_related_cats) ? ' op.order_project_exp_test > 0 AND ' : ' op.order_project_exp_test <= 0 AND ';
+ $order_sql .= in_array('ast_ust', $service_related_cats) ? ' op.order_project_ast_ust > 0 AND ' : ' op.order_project_ast_ust <= 0 AND ';
+
+
+$order_sql .= 'op.order_project_type = "service"';
+$service_sql .= 'ORDER BY op.order_project_idx ASC';
+
+try {
+  $service_query = $db->prepare(sprintf(<<<SQL
+SELECT p.project_site_name AS `name`, pr.project_related_id AS project_id, pr.project_related_site_id, op.order_project_id AS id, op.order_project_idx AS idx, p.project_site_name AS title
+FROM project_related pr
+
+LEFT JOIN
+(
+    SELECT op.order_project_id,
+           op.order_project_site_id,
+           op.order_project_idx
+    FROM order_project op
+
+    WHERE %s
+) op ON pr.project_related_site_id = op.order_project_site_id
+
+LEFT JOIN project_site p
+ON pr.project_related_site_id = p.project_site_id
+
+WHERE %s
+SQL
+, $order_sql, $service_sql));
+  $success = $service_query->execute();
+
+  if($success) {
+    while($row = $service_query->fetch(PDO::FETCH_ASSOC)) {
+        $service_projects[] = array('name' => $row['name'], 'project_id' => $row['project_id'], 'id' => $row['id'], 'idx' => $row['idx'], 'title' => $row['title']);
     }
   }
 } catch (PDOException  $e ) {
@@ -168,7 +261,7 @@ try {
             <?php 
                 $max = 0;
 
-                foreach($services_projects as $services_key => $service) {
+                foreach($service_projects as $service_key => $service) {
                     if($max >= 11) continue;
                     $url = '/project/' . implode('-', explode(' ', $service['title'])) . '/';
 

@@ -1,8 +1,13 @@
 angular
   .module('AngularCMS', ['ngMaterial', 'ngMessages', 'ng-sortable', 'ngFileUpload', 'ui.router', 'ui.router.state.events', 'ui.tinymce'])
-  .filter('servicekey', function() {
+  .filter('projectkey', function() {
     return function(input) {
       return (!!input) ? input.replace(/project_related_/, '').charAt(0).toUpperCase() + input.replace(/project_related_/, '').substr(1).toLowerCase() : '';
+    }
+  })
+  .filter('servicekey', function() {
+    return function(input) {
+      return (!!input) ? input.replace(/services_related_/, '').charAt(0).toUpperCase() + input.replace(/services_related_/, '').substr(1).toLowerCase() : '';
     }
   })
   .filter('capitalize', function() {
@@ -407,27 +412,59 @@ angular
 
     // Service Page API
 
-    this.getServiceContent = function (name) {
+    this.getServices = function () {
       return $http({
         method: 'POST',
         url: 'api/',
-        data: { type: 'service', method: 'content', name: name }
+        data: { type: 'service', method: 'list' }
       });
     };
 
-    this.getServiceProjects = function (name) {
+    this.getServiceContent = function (id) {
       return $http({
         method: 'POST',
         url: 'api/',
-        data: { type: 'service', method: 'projects', name: name }
+        data: { type: 'service', method: 'content', id: id }
       });
     };
 
-    this.saveServiceContent = function (name, content) {
+    this.getServiceRelated = function (id) {
       return $http({
         method: 'POST',
         url: 'api/',
-        data: { type: 'service', method: 'save_content', name: name, content: content }
+        data: { type: 'service', method: 'get_related', id: id }
+      });
+    };
+
+    this.saveServiceRelated = function (id, related) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'service', method: 'save_related', id: id, related: related }
+      });
+    };
+
+    this.getServiceProjects = function (id) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'service', method: 'projects', id: id }
+      });
+    };
+
+    this.saveServiceContent = function (id, content) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'service', method: 'save_content', id: id, content: content }
+      });
+    };
+
+    this.saveServiceOrder = function (id, projects) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'service', method: 'save_order', id: id, projects: projects }
       });
     };
 
@@ -1039,10 +1076,10 @@ angular
     }
 
     $scope.toggleRelatedCheckbox = function (service) {
-      if($scope.projectRelated[service] !== null) {
-        $scope.projectRelated[service] = null;
+      if($scope.projectRelated[service] == 0) {
+        $scope.projectRelated[service] = 1;
       } else {
-        $scope.projectRelated[service] = "0";
+        $scope.projectRelated[service] = 0;
       }
     }
 
@@ -1115,28 +1152,59 @@ angular
   }])
   .controller('ServicesCtrl', ['$scope', '$mdDialog', 'Upload', '$timeout', 'Toast', 'API', function ($scope, $mdDialog, Upload, $timeout, Toast, $api) {
     $scope.activeService = null;
+    $scope.services = [];
     $scope.serviceContent = {'id': 0, 'content': '', 'delete': false};
     $scope.saving = false;
+    $scope.serviceLoading = false;
     $scope.contentEditor = null;
 
     $scope.serviceProjects = [];
 
+    $api.getServices().then(function (response) {
+      $timeout(function() {
+        $scope.services = response.data.data;
+      }, 1000);
+    }, function (response) {
+      if(response.data.msg != '') {
+        Toast.showToast('error', response.data.msg);
+      } else {
+        Toast.showToast('error', 'Could not load list of services: ', response.data.data);
+      }
+    });
+
     // Watch for project switching
     $scope.$watch('activeService', function (newVal, oldVal) {
       if (newVal != '' && newVal !== null) {
+        $scope.serviceLoading = true;
         $api.getServiceContent(newVal).then(function (response) {
           $scope.serviceContent = response.data.data;
 
           $api.getServiceProjects(newVal).then(function (response) {
-            $scope.serviceProjects = response.data.data;
+            console.log(response.data.data == null);
+            $scope.serviceProjects = response.data.data == null ? [] : response.data.data;
+            $api.getServiceRelated(newVal).then(function (response) {
+              $timeout(function() {
+                $scope.serviceRelated = response.data.data;
+                $scope.serviceLoading = false;
+              }, 1000);
+            }, function (response) {
+              $scope.serviceLoading = false;
+              if(response.data.msg != '') {
+                Toast.showToast('error', response.data.msg);
+              } else {
+                Toast.showToast('error', 'Could not load related for service: ' + newVal.charAt(0).toUpperCase(), response.data.data);
+              }
+            });
           }, function (response) {
+            $scope.serviceLoading = false;
             if(response.data.msg != '') {
               Toast.showToast('error', response.data.msg);
             } else {
               Toast.showToast('error', 'Could not load projects for service: ' + newVal.charAt(0).toUpperCase(), response.data.data);
             }
           });
-        }, function (response) {        
+        }, function (response) {     
+          $scope.serviceLoading = false;   
           if(response.data.msg != '') {
             Toast.showToast('error', response.data.msg);
           } else {
@@ -1187,14 +1255,38 @@ angular
       $scope.saveContent();
     }
 
-    $scope.saveContent = function () {
+    $scope.toggleRelatedCheckbox = function (related) {
+      if($scope.serviceRelated[related] == 0) {
+        $scope.serviceRelated[related] = 1;
+      } else {
+        $scope.serviceRelated[related] = 0;
+      }
+    }
+
+    $scope.save = function () {
       $scope.saving = true;
 
       $timeout(function () {
         $api.saveServiceContent($scope.activeService, $scope.serviceContent).then(function (response) {
-          $scope.saving = false;
-          console.log(tinyMCE.get('content'));
-          // $scope.serviceContent = response.data.data;
+            $api.saveServiceOrder($scope.activeService, $scope.serviceProjects).then(function (response) {
+              $api.saveServiceRelated($scope.activeService, $scope.serviceRelated).then(function (response) {
+                $scope.saving = false;
+              }, function (response) {
+                $scope.saving = false;
+                if(response.data.msg != '') {
+                  Toast.showToast('error', response.data.msg);
+                } else {
+                  Toast.showToast('error', 'Error updating service related categories', response.data.data);
+                }
+              });
+            }, function (response) {
+              $scope.saving = false;
+              if(response.data.msg != '') {
+                Toast.showToast('error', response.data.msg);
+              } else {
+                Toast.showToast('error', 'Error updating service project order', response.data.data);
+              }
+            });
         }, function (response) {
           $scope.saving = false;
           if(response.data.msg != '') {
@@ -1207,19 +1299,9 @@ angular
     }
 
     $scope.onUpdate = function($evt) {
-      // $timeout(function () {
-      //   API.updateImages($scope.activeProject, $evt.models).then(function (response) {
-      //     $scope.projectContent = response.data.data;
-      //     $scope.timeStamp = new Date().getTime();
-      //   }, function (response) {
-      //     if(response.data.msg != '') {
-      //       Toast.showToast('error', response.data.msg);
-      //     } else {
-      //       Toast.showToast('error', 'Could not update image order', response.data.data);
-      //     }
-      //   });
-      // });
-      console.log('stuff');
+      angular.forEach($scope.serviceProjects, function(value, key) {
+        value.idx = (key + 1);
+      });
     }
 
     $scope.sortableConf = {

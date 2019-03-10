@@ -26,7 +26,10 @@ if(!getLogin($db)) {
 <body class="main" ng-app="AngularCMS">
 
   <div class="main" ng-controller="ServicesCtrl" layout="row" flex="100">
+  <div layout="column" flex="100">
+    <md-progress-linear md-mode="indeterminate" ng-hide="serviceLoading === false"></md-progress-linear>
 
+    <div layout="row" flex>
     <div layout="row" layout-padding layout-align="center center" flex="20">
 
       <div class="content-wrapper" flex>
@@ -36,8 +39,8 @@ if(!getLogin($db)) {
             <label><em>Service</em></label>
             <md-select ng-model="activeService">
               <md-option></md-option>
-              <md-option ng-repeat="service in ['civil', 'transportation', 'construction', 'permitting', 'site-assessments', 'remidation', 'hazardous-materials', 'asts/usts']" ng-value="service">
-                {{service | capitalize}}
+              <md-option ng-repeat="service in services" ng-value="service.id">
+                {{service.name | capitalize}}
               </md-option>
             </md-select>
           </md-input-container>
@@ -47,26 +50,13 @@ if(!getLogin($db)) {
     </div>
 
     <div layout="row" layout-padding layout-align="center center" flex="80">
-
       <div class="content" flex md-whiteframe="4">
         <md-tabs md-dynamic-height md-border-bottom>
-          <!-- <md-tab label="header" md-on-select="onTabChanges('content')">
-            <md-content class="md-padding" layout="column">
-              <md-input-container>
-                <label>Header</label>
-                <input ng-model="serviceContent.title">
-              </md-input-container>
-              <md-input-container>
-                <label>Content</label>
-                <textarea ng-model="serviceContent.content" rows="6"></textarea>
-              </md-input-container>
-            </md-content>
-          </md-tab> -->
-
-          <md-tab label="content" md-on-select="onTabChanges('content')">
+          <md-tab label="content" md-on-select="onTabChanges('content')" ng-disabled="activeService === null">
             <md-content class="section-wrapper" layout-padding>
               <div layout="column" layout-align="start start">
-                <div class="content-sections" layout="column" layout-fill> <!--  ng-repeat="(key, content) in serviceContent track by $index" -->
+                <div class="content-sections" layout="column" layout-fill ng-hide="activeService === null || serviceLoading === true">
+                  <!--  ng-repeat="(key, content) in serviceContent track by $index" -->
                   <!-- <md-input-container class="md-block" flex-gt-sm>
                     <label>Title</label>
                     <input ng-model="content.title">
@@ -76,11 +66,11 @@ if(!getLogin($db)) {
                     <!-- <label>Content</label> -->
                     <textarea id="service-content" ui-tinymce="tinymceOptions" ng-model="serviceContent.content" rows="20" md-select-on-focus></textarea>
                   </md-input-container>
-                  <div class="no-margin" layout="row" layout-align="end center">
-                    <!-- <md-input-container class="no-margin">
+                  <!-- <div class="no-margin" layout="row" layout-align="end center">
+                    <md-input-container class="no-margin">
                           <md-button class="md-warn no-margin" ng-click="deleteContent($index)" layout="row" layout-align="center center"><i class="material-icons" ng-hide="content.delete">delete_sweep</i><md-progress-circular class="md-warn" ng-show="content.delete" md-diameter="20px"></md-progress-circular></md-button>
-                    </md-input-container> -->
-                  </div>
+                    </md-input-container>
+                  </div> -->
                 </div>
               </div>
               <div class="no-margin" layout="row" layout-align="start center">
@@ -91,17 +81,17 @@ if(!getLogin($db)) {
             </md-content>
           </md-tab>
 
-          <md-tab label="order" md-on-select="onTabChanges('order')">
+          <md-tab label="order" md-on-select="onTabChanges('order')" ng-disabled="activeService === null">
             <md-content class="section-wrapper" layout-padding sv-root>
-              <md-divider ></md-divider>
+              <!-- <md-divider ></md-divider> -->
               <!-- <md-list class="md-dense" flex> -->
                 <ul ng-sortable="sortableConf">
                   <li ng-repeat="project in serviceProjects">
                     <div class="md-list-item-text" layout="row">
-                      <md-button class="md-fab md-mini md-primary">
+                      <md-button ng-disabled="serviceProjects.length < 2" class="md-fab md-mini md-primary">
                         <i class="material-icons">import_export</i>
                       </md-button>
-                      <p>{{ project.project_site_name }}</p>
+                      <p>{{ project.name }}</p>
                       <!-- <h4>{{ item.what }}</h4>
                       <p>{{ item.notes }}</p> -->
                     </div>
@@ -123,6 +113,18 @@ if(!getLogin($db)) {
             </md-content>
           </md-tab>
 
+          <md-tab label="related" md-on-select="onTabChanges('related')" ng-disabled="activeService === null">
+            <md-content class="section-wrapper" layout-padding>
+                <div layout="row" layout-wrap flex>
+                  <div flex="100" ng-repeat="(related, value) in serviceRelated track by $index">
+                    <md-checkbox ng-hide="related == 'services_related_site_id'" ng-checked="value > 0" ng-click="toggleRelatedCheckbox(related)">
+                     {{ related | servicekey }}
+                    </md-checkbox>
+                  </div>
+                </div>
+            </md-content>
+          </md-tab>
+
         </md-tabs>
         <div layout="row" layout-align="end end">
           <md-input-container>
@@ -130,6 +132,8 @@ if(!getLogin($db)) {
           </md-input-container>
         </div>
       </div>
+    </div>
+    </div>
     </div>
   </div>
 

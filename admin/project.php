@@ -154,12 +154,12 @@ if(!getLogin($db)) {
             </md-content>
           </md-tab>
 
-          <md-tab label="services" md-on-select="onTabChanges('related')">
+          <md-tab label="related" md-on-select="onTabChanges('related')">
             <md-content class="section-wrapper" layout-padding>
                 <div layout="row" layout-wrap flex>
                   <div flex="100" ng-repeat="(service, value) in projectRelated track by $index">
-                    <md-checkbox ng-hide="service == 'project_related_site_id' || service == 'project_related_id'" ng-checked="value !== null" ng-click="toggleRelatedCheckbox(service)">
-                     {{ service | servicekey }}
+                    <md-checkbox ng-hide="service == 'project_related_site_id' || service == 'project_related_id'" ng-checked="value > 0" ng-click="toggleRelatedCheckbox(service)">
+                     {{ service | projectkey }}
                     </md-checkbox>
                   </div>
                 </div>

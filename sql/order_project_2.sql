@@ -1,0 +1,1 @@
+ALTER TABLE order_project ADD COLUMN order_project_idx int(2) DEFAULT NULL;

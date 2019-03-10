@@ -14,17 +14,27 @@ $SesClient = new SesClient([
 
 global $services_aliases;
 $services_aliases = [
-  'environmental' => 'enviro',
   'permitting' => 'perm',
-  'water' => 'water',
   'transportation' => 'transport',
   'civil' => 'civil',
-  'survey' => 'survey',
-  'planning' => 'planning',
+  'asts/usts' => 'asts',
   'construction' => 'const',
-  'structural' => 'structural',
-  'bridges' => 'bridges',
-  'utility' => 'utility'
+  'site-assessments' => 'siteas',
+  'remidiation' => 'remid',
+  'hazardous-materials' => 'hazmat'
+];
+
+
+global $services_related;
+$services_related = [
+  'permitting' => ['perm'],
+  'asts/usts' => ['ast_ust'],
+  'transportation' => ['transport', 'bridges', 'structural', 'utility', 'planning', 'perm'],
+  'civil' => ['civil', 'survey', 'planning', 'structural', 'planning', 'utility', 'perm', 'water'],
+  'construction' => ['const', 'perm', 'planning', 'survey'],
+  'site-assessments' => ['esa', 'sgc'],
+  'remidiation' => ['rap', 'design_remid'],
+  'hazardous-materials' => ['hazmat', 'design_remid']
 ];
 
 
@@ -224,22 +234,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           http_response_code(400);
           die('The request data is invalid');
       case "service":
-          if($data['method'] == 'content' && isset($data['name'])) {
+          if($data['method'] == 'content' && isset($data['id'])) {
             http_response_code(200);
-            $response['data'] = getServiceContent($db, $data['name']);
+            $response['data'] = getServiceContent($db, $data['id']);
             break;
-          } else if($data['method'] == 'projects' && isset($data['name'])) {
+          } else if($data['method'] == 'list') {
             http_response_code(200);
-            $response['data'] = getServiceProjects($db, $data['name']);
+            $response['data'] = getServices($db);
             break;
-          } else if($data['method'] == 'save_content' && isset($data['name'])) {
+          } else if($data['method'] == 'projects' && isset($data['id'])) {
             http_response_code(200);
-            if(saveServiceContent($db, $data['name'], $data['content']) === true) {
+            $response['data'] = getServiceProjects($db, $data['id']);
+            break;
+          } else if($data['method'] == 'get_related' && isset($data['id'])) {
+            http_response_code(200);
+            $response['data'] = getServiceRelated($db, $data['id'], true);
+            break;
+          } else if($data['method'] == 'save_order' && isset($data['id']) && isset($data['projects'])) {
+            http_response_code(200);
+            if(saveServiceOrder($db, $data['id'], $data['projects']) === true) {
               http_response_code(200);
-              $response['data'] = getServiceContent($db, $data['name']);
+              $response['data'] = getServiceProjects($db, $data['id']);
             } else {
               http_response_code(500);
-              die('Error saving service content: ' . strtoupper($data['name']));
+              die('Error saving service project order: ' . strtoupper($data['id']));
+            }
+            break;
+          } else if($data['method'] == 'save_related' && isset($data['id'])) {
+            http_response_code(200);
+            if(saveServiceRelated($db, $data['id'], $data['related']) === true) {
+              http_response_code(200);
+              $response['data'] = getServiceRelated($db, $data['id'], true);
+            } else {
+              http_response_code(500);
+              die('Error saving service related categories: ' . strtoupper($data['id']));
+            }
+            break;
+          } else if($data['method'] == 'save_content' && isset($data['id'])) {
+            http_response_code(200);
+            if(saveServiceContent($db, $data['id'], $data['content']) === true) {
+              http_response_code(200);
+              $response['data'] = getServiceContent($db, $data['id']);
+            } else {
+              http_response_code(500);
+              die('Error saving service content: ' . strtoupper($data['id']));
             }
             break;
           }
@@ -748,11 +786,18 @@ function saveProjectContent(PDO $db, String $id, Array $content) {
 }
 
 function saveProjectRelated(PDO $db, String $id, Array $related) {
+  $success = false;
 
   try {
 
-    $rel_query = $db->prepare('INSERT INTO project_related (project_related_id, project_related_site_id, project_related_survey, project_related_planning, project_related_civil, project_related_transport, project_related_structural, project_related_bridges, project_related_utility, project_related_water, project_related_const, project_related_perm, project_related_enviro) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE project_related_id = ?, project_related_site_id = ?, project_related_survey = ?, project_related_planning = ?, project_related_civil = ?, project_related_transport = ?, project_related_structural = ?, project_related_bridges = ?, project_related_utility = ?, project_related_water = ?, project_related_const = ?, project_related_perm = ?, project_related_enviro = ?');
-    $rel_query->execute(array(
+    $rel_query = $db->prepare('INSERT INTO project_related (project_related_id, project_related_site_id, project_related_survey, 
+                 project_related_planning, project_related_civil, project_related_transport, project_related_structural, project_related_bridges, project_related_utility, project_related_water, project_related_const, 
+                 project_related_perm, project_related_esa, project_related_sgc, project_related_rap, project_related_design_remid, project_related_hazmat, project_related_exp_test, project_related_ast_ust) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE project_related_id = ?, project_related_site_id = ?, project_related_survey = ?, 
+                 project_related_planning = ?, project_related_civil = ?, project_related_transport = ?, project_related_structural = ?, project_related_bridges = ?, project_related_utility = ?, project_related_water = ?, 
+                 project_related_const = ?, project_related_perm = ?, project_related_esa = ?, project_related_sgc = ?, project_related_rap = ?, project_related_design_remid = ?, project_related_hazmat = ?, 
+                 project_related_exp_test = ?, project_related_ast_ust = ?');
+
+    $success = $rel_query->execute(array(
       $related['project_related_id'],
       $related['project_related_site_id'],
       $related['project_related_survey'], 
@@ -765,7 +810,14 @@ function saveProjectRelated(PDO $db, String $id, Array $related) {
       $related['project_related_water'], 
       $related['project_related_const'], 
       $related['project_related_perm'], 
-      $related['project_related_enviro'],
+      $related['project_related_esa'],
+      $related['project_related_sgc'],
+      $related['project_related_rap'],
+      $related['project_related_design_remid'],
+      $related['project_related_hazmat'],
+      $related['project_related_exp_test'],
+      $related['project_related_ast_ust'],
+
       $related['project_related_id'],
       $related['project_related_site_id'],
       $related['project_related_survey'], 
@@ -778,14 +830,58 @@ function saveProjectRelated(PDO $db, String $id, Array $related) {
       $related['project_related_water'], 
       $related['project_related_const'], 
       $related['project_related_perm'], 
-      $related['project_related_enviro']));
+      $related['project_related_esa'],
+      $related['project_related_sgc'],
+      $related['project_related_rap'],
+      $related['project_related_design_remid'],
+      $related['project_related_hazmat'],
+      $related['project_related_exp_test'],
+      $related['project_related_ast_ust']));
 
   } catch (PDOException  $e ) {
     http_response_code(500);
     die("Error: " . $e);
   }
   
-  return true;
+  return $success;
+}
+
+function saveServiceRelated(PDO $db, String $id, Array $related) {
+  $success = false;
+
+  try {
+
+    $rel_query = $db->prepare('UPDATE services_related SET services_related_survey = ?, 
+                 services_related_planning = ?, services_related_civil = ?, services_related_transport = ?, services_related_structural = ?, services_related_bridges = ?, services_related_utility = ?, services_related_water = ?, services_related_const = ?, 
+                 services_related_perm = ?, services_related_esa = ?, services_related_sgc = ?, services_related_rap = ?, services_related_design_remid = ?, services_related_hazmat = ?, services_related_exp_test = ?, services_related_ast_ust = ?
+                 WHERE services_related_site_id = ?');
+
+    $success = $rel_query->execute(array(
+      $related['services_related_survey'], 
+      $related['services_related_planning'], 
+      $related['services_related_civil'], 
+      $related['services_related_transport'], 
+      $related['services_related_structural'], 
+      $related['services_related_bridges'], 
+      $related['services_related_utility'], 
+      $related['services_related_water'], 
+      $related['services_related_const'], 
+      $related['services_related_perm'], 
+      $related['services_related_esa'],
+      $related['services_related_sgc'],
+      $related['services_related_rap'],
+      $related['services_related_design_remid'],
+      $related['services_related_hazmat'],
+      $related['services_related_exp_test'],
+      $related['services_related_ast_ust'],
+      $related['services_related_site_id']));
+
+  } catch (PDOException  $e ) {
+    http_response_code(500);
+    die("Error: " . $e);
+  }
+  
+  return $success;
 }
 
 function updateProjectImages($db, $projID, $num) {
@@ -974,15 +1070,41 @@ function getRelatedProjects($db, $projectID) {
   return $project_related;
 }
 
-function getServiceContent(PDO $db, String $name) {
+function getServices(PDO $db) {
+  global $response;
+  global $services_aliases;
+  $services = array();
+  $success = false;
+
+  try {
+    $query = $db->prepare('Select * from services_site');
+    $success = $query->execute();
+  
+    while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+      $service_content[] = array('id' => $row['services_site_id'], 'name' => $row['services_site_name']);
+    }
+  } catch (PDOException  $e ) {
+    http_response_code(500);
+    die('PDO Error: ' . $e);
+  }
+
+  if(!$success) {
+    http_response_code(500);
+    $response['msg'] = 'Error getting services list';
+  }
+
+  return $service_content;
+}
+
+function getServiceContent(PDO $db, String $id) {
   global $response;
   global $services_aliases;
   $service_content = array('id' => null, 'content' => '', 'delete' => false);
   $success = false;
 
   try {
-    $query = $db->prepare('Select * from services_content where services_content_page = ?');
-    $success = $query->execute(array($services_aliases[$name]));
+    $query = $db->prepare('Select * from services_content where services_content_site_id = ?');
+    $success = $query->execute(array($id));
   
     while($row = $query->fetch(PDO::FETCH_ASSOC)) {
       $service_content[$row['services_content_type']] = $row['services_content_value'];
@@ -1002,25 +1124,166 @@ function getServiceContent(PDO $db, String $name) {
   return $service_content;
 }
 
-function getServiceProjects(PDO $db, String $service_name) {
+function getServiceRelated(PDO $db, String $id, $full = false) {
   global $response;
   global $services_aliases;
-  $service_projects = array();
+  $service_related_categories = array();
   $success = false;
 
   try {
-    $service_query = 'Select project_related_id, project_related_site_id from project_related where project_related_' . $services_aliases[$service_name] . ' IS NOT NULL ORDER BY project_related_' . $services_aliases[$service_name] . ' = 0, project_related_' . $services_aliases[$service_name] . ' asc';
-    $service_query = $db->prepare($service_query);
-    $success = $service_query->execute();
+    $service_query = $db->prepare('Select * from services_related where services_related_site_id = ?');
+    $success = $service_query->execute(array($id));
   
     if($success) {
       while($row=$service_query->fetch(PDO::FETCH_ASSOC)) {
-        $nested_query = $db->prepare('Select project_site_name from project_site where project_site_id = ?');
-        $success = $nested_query->execute(array($row['project_related_site_id']));
-      
-        while($nested_row = $nested_query->fetch(PDO::FETCH_ASSOC)) {
-            $service_projects[] = array('project_related_site_id' => $row['project_related_site_id'], 'project_site_name' => $nested_row['project_site_name']);
+        foreach($row as $cat => $val) {
+          if($cat == 'services_related_id') continue;
+
+          if($full) {
+            $service_related_categories[$cat] = $val;
+          } else {
+            if($cat == 'services_related_site_id') continue;
+            if((int) $val > 0) $service_related_categories[] = str_replace("services_related_", "", $cat);
+          }
         }
+      }
+    }
+  } catch (PDOException  $e ) {
+    echo "Error: " . $e;
+  }
+
+  if(!$success) {
+    http_response_code(500);
+    $response['msg'] = 'Error getting services projects';
+  }
+
+  return $service_related_categories;
+}
+
+function saveServiceOrder(PDO $db, String $id, Array $projects) {
+  $service_related_cats = getServiceRelated($db, $id);
+  $success = true;
+
+  foreach ($projects as $project) {
+    try {
+      $upd_query = $db->prepare('INSERT INTO order_project (order_project_id, order_project_site_id, order_project_idx, order_project_type, 
+                    order_project_survey, order_project_planning, order_project_civil, order_project_transport, order_project_structural, order_project_bridges,
+                    order_project_utility, order_project_water, order_project_const, order_project_perm, order_project_esa, order_project_sgc, order_project_rap, 
+                    order_project_design_remid, order_project_hazmat, order_project_exp_test, order_project_ast_ust) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE order_project_idx = ?');
+      $success = $upd_query->execute(array(
+        $project['id'],
+        $project['project_id'],
+        $project['idx'],
+        'service',
+        in_array('survey', $service_related_cats) ? 1 : 0,
+        in_array('planning', $service_related_cats) ? 1 : 0,
+        in_array('civil', $service_related_cats) ? 1 : 0,
+        in_array('transport', $service_related_cats) ? 1 : 0,
+        in_array('structural', $service_related_cats) ? 1 : 0,
+        in_array('bridges', $service_related_cats) ? 1 : 0,
+        in_array('utility', $service_related_cats) ? 1 : 0,
+        in_array('water', $service_related_cats) ? 1 : 0,
+        in_array('const', $service_related_cats) ? 1 : 0,
+        in_array('perm', $service_related_cats) ? 1 : 0,
+        in_array('esa', $service_related_cats) ? 1 : 0,
+        in_array('sgc', $service_related_cats) ? 1 : 0,
+        in_array('rap', $service_related_cats) ? 1 : 0,
+        in_array('design_remid', $service_related_cats) ? 1 : 0,
+        in_array('hazmat', $service_related_cats) ? 1 : 0,
+        in_array('exp_test', $service_related_cats) ? 1 : 0,
+        in_array('ast_ust', $service_related_cats) ? 1 : 0,
+        $project['idx']
+      ));
+
+      if(!$success) {
+        break;
+      }
+    } catch (PDOException  $e ) {
+      echo "Error: " . $e;
+    }
+  }
+
+  return $success;
+}
+
+function getServiceProjects(PDO $db, String $id) {
+  global $response;
+  global $services_aliases;
+
+  $service_related_cats = getServiceRelated($db, $id);
+  $order_sql = '';
+  $service_projects = array();
+  $success = false;
+
+  $service_sql = '';
+  if(!is_array($service_related_cats) || sizeof($service_related_cats) <= 0) return;
+
+    $service_sql .= in_array('survey', $service_related_cats) ? ' pr.project_related_survey > 0 AND ' : ' pr.project_related_survey <= 0 AND ';
+    $service_sql .= in_array('planning', $service_related_cats) ? ' pr.project_related_planning > 0 AND ' : ' pr.project_related_planning <= 0 AND ';
+    $service_sql .= in_array('civil', $service_related_cats) ? ' pr.project_related_civil > 0 AND ' : ' pr.project_related_civil <= 0 AND ';
+    $service_sql .= in_array('transport', $service_related_cats) ? ' pr.project_related_transport > 0 AND ' : ' pr.project_related_transport <= 0 AND ';
+    $service_sql .= in_array('structural', $service_related_cats) ? ' pr.project_related_structural > 0 AND ' : ' pr.project_related_structural <= 0 AND ';
+    $service_sql .= in_array('bridges', $service_related_cats) ? ' pr.project_related_bridges > 0 AND ' : ' pr.project_related_bridges <= 0 AND ';
+    $service_sql .= in_array('utility', $service_related_cats) ? ' pr.project_related_utility > 0 AND ' : ' pr.project_related_utility <= 0 AND ';
+    $service_sql .= in_array('water', $service_related_cats) ? ' pr.project_related_water > 0 AND ' : ' pr.project_related_water <= 0 AND ';
+    $service_sql .= in_array('const', $service_related_cats) ? ' pr.project_related_const > 0 AND ' : ' pr.project_related_const <= 0 AND ';
+    $service_sql .= in_array('perm', $service_related_cats) ? ' pr.project_related_perm > 0 AND ' : ' pr.project_related_perm <= 0 AND ';
+    $service_sql .= in_array('esa', $service_related_cats) ? ' pr.project_related_esa > 0 AND ' : ' pr.project_related_esa <= 0 AND ';
+    $service_sql .= in_array('sgc', $service_related_cats) ? ' pr.project_related_sgc > 0 AND ' : ' pr.project_related_sgc <= 0 AND ';
+    $service_sql .= in_array('rap', $service_related_cats) ? ' pr.project_related_rap > 0 AND ' : ' pr.project_related_rap <= 0 AND ';
+    $service_sql .= in_array('design_remid', $service_related_cats) ? ' pr.project_related_design_remid > 0 AND ' : ' pr.project_related_design_remid <= 0 AND ';
+    $service_sql .= in_array('hazmat', $service_related_cats) ? ' pr.project_related_hazmat > 0 AND ' : ' pr.project_related_hazmat <= 0 AND ';
+    $service_sql .= in_array('exp_test', $service_related_cats) ? ' pr.project_related_exp_test > 0 AND ' : ' pr.project_related_exp_test <= 0 AND ';
+    $service_sql .= in_array('ast_ust', $service_related_cats) ? ' pr.project_related_ast_ust > 0 ' : ' pr.project_related_ast_ust <= 0 ';
+
+   $order_sql .= in_array('survey', $service_related_cats) ? ' op.order_project_survey > 0 AND ' : ' op.order_project_survey <= 0 AND ';
+   $order_sql .= in_array('planning', $service_related_cats) ? ' op.order_project_planning > 0 AND ' : ' op.order_project_planning <= 0 AND ';
+   $order_sql .= in_array('civil', $service_related_cats) ? ' op.order_project_civil > 0 AND ' : ' op.order_project_civil <= 0 AND ';
+   $order_sql .= in_array('transport', $service_related_cats) ? ' op.order_project_transport > 0 AND ' : ' op.order_project_transport <= 0 AND ';
+   $order_sql .= in_array('structural', $service_related_cats) ? ' op.order_project_structural > 0 AND ' : ' op.order_project_structural <= 0 AND ';
+   $order_sql .= in_array('bridges', $service_related_cats) ? ' op.order_project_bridges > 0 AND ' : ' op.order_project_bridges <= 0 AND ';
+   $order_sql .= in_array('utility', $service_related_cats) ? ' op.order_project_utility > 0 AND ' : ' op.order_project_utility <= 0 AND ';
+   $order_sql .= in_array('water', $service_related_cats) ? ' op.order_project_water > 0 AND ' : ' op.order_project_water <= 0 AND ';
+   $order_sql .= in_array('const', $service_related_cats) ? ' op.order_project_const > 0 AND ' : ' op.order_project_const <= 0 AND ';
+   $order_sql .= in_array('perm', $service_related_cats) ? ' op.order_project_perm > 0 AND ' : ' op.order_project_perm <= 0 AND ';
+   $order_sql .= in_array('esa', $service_related_cats) ? ' op.order_project_esa > 0 AND ' : ' op.order_project_esa <= 0 AND ';
+   $order_sql .= in_array('sgc', $service_related_cats) ? ' op.order_project_sgc > 0 AND ' : ' op.order_project_sgc <= 0 AND ';
+   $order_sql .= in_array('rap', $service_related_cats) ? ' op.order_project_rap > 0 AND ' : ' op.order_project_rap <= 0 AND ';
+   $order_sql .= in_array('design_remid', $service_related_cats) ? ' op.order_project_design_remid > 0 AND ' : ' op.order_project_design_remid <= 0 AND ';
+   $order_sql .= in_array('hazmat', $service_related_cats) ? ' op.order_project_hazmat > 0 AND ' : ' op.order_project_hazmat <= 0 AND ';
+   $order_sql .= in_array('exp_test', $service_related_cats) ? ' op.order_project_exp_test > 0 AND ' : ' op.order_project_exp_test <= 0 AND ';
+   $order_sql .= in_array('ast_ust', $service_related_cats) ? ' op.order_project_ast_ust > 0 AND ' : ' op.order_project_ast_ust <= 0 AND ';
+
+
+  $order_sql .= 'op.order_project_type = "service"';
+  $service_sql .= 'ORDER BY op.order_project_idx ASC';
+
+  try {
+    $service_query = $db->prepare(sprintf(<<<SQL
+SELECT p.project_site_name AS `name`, pr.project_related_id AS project_id, pr.project_related_site_id, op.order_project_id AS id, op.order_project_idx AS idx
+FROM project_related pr
+
+LEFT JOIN
+(
+      SELECT op.order_project_id,
+             op.order_project_site_id,
+             op.order_project_idx
+      FROM order_project op
+
+      WHERE %s
+) op ON pr.project_related_site_id = op.order_project_site_id
+
+LEFT JOIN project_site p
+ON pr.project_related_site_id = p.project_site_id
+
+WHERE %s
+SQL
+  , $order_sql, $service_sql));
+    $success = $service_query->execute();
+  
+    if($success) {
+      while($row = $service_query->fetch(PDO::FETCH_ASSOC)) {
+          $service_projects[] = array('name' => $row['name'], 'project_id' => $row['project_id'], 'id' => $row['id'], 'idx' => $row['idx']);
       }
     }
   } catch (PDOException  $e ) {
@@ -1035,14 +1298,14 @@ function getServiceProjects(PDO $db, String $service_name) {
   return $service_projects;
 }
 
-function saveServiceContent(PDO $db, String $name, Array $content) {
+function saveServiceContent(PDO $db, String $id, Array $content) {
   global $services_aliases;
   $success = false;
 
   try {
     // foreach ($content as $idx => $content) {
       if ($content['delete'] == False) {
-        $query = $db->prepare('INSERT INTO services_content (services_content_id, services_content_type, services_content_page, services_content_value, services_content_idx) VALUES (?,?,?,?,0) ON DUPLICATE KEY UPDATE services_content_value = ?');
+        $query = $db->prepare('INSERT INTO services_content (services_content_id, services_content_type, services_content_site_id, services_content_value, services_content_idx) VALUES (?,?,?,?,0) ON DUPLICATE KEY UPDATE services_content_value = ?');
         // $success = $query->execute(array(
         //   null,
         //   'title',
@@ -1055,7 +1318,7 @@ function saveServiceContent(PDO $db, String $name, Array $content) {
         $success = $query->execute(array(
           $content['id'],
           'content',
-          $services_aliases[$name],
+          $id,
           $content['content'],
           $content['content'],
         ));

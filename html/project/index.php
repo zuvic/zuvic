@@ -76,8 +76,8 @@ try {
     foreach($project_related as $related_key => $related) {
         if($related_key == 'project_related_id' || $related_key == 'project_related_site_id') continue;
 
-        if($project_related[$related_key] != null) {
-            $primary .= $related_key . ' IS NOT NULL AND ';
+        if($project_related[$related_key] > 0) {
+            $primary .= $related_key . ' > 0 AND ';
         }
 
     }
@@ -89,6 +89,7 @@ try {
     $query->execute();
         
     while($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        if ($project_site_id == $row['project_related_site_id']) continue;
         $related_projects[$row['project_related_id']] = array();
 
         foreach($row as $key => $value) {
