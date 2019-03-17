@@ -90,7 +90,7 @@ function getServiceProjects(PDO $db, String $id) {
   $service_projects = array();
   $success = false;
 
-  if(!is_array($service_related) || sizeof($service_related) <= 0) return [];
+  if(!is_array($service_related) || sizeof($service_related) <= 0 || !isset($service_related['service_related_key'])) return [];
 
   $project_key = '';
 
