@@ -133,6 +133,17 @@ html, body, .main {
   display: flex;
 }
 
+.main-container.loading:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background: #ffffffa1;
+}
+
 image-loader {
   width: 100%;
 }

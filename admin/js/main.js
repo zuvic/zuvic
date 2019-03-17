@@ -5,9 +5,14 @@ angular
       return (!!input) ? input.replace(/project_related_/, '').charAt(0).toUpperCase() + input.replace(/project_related_/, '').substr(1).toLowerCase() : '';
     }
   })
-  .filter('servicekey', function() {
+  .filter('relatedkeys', function() {
     return function(input) {
-      return (!!input) ? input.replace(/services_related_/, '').charAt(0).toUpperCase() + input.replace(/services_related_/, '').substr(1).toLowerCase() : '';
+      if (!input) return '';
+
+      var words = input.split(/_|\s/);
+      words = words.map(function(x){ return x.charAt(0).toUpperCase() + x.slice(1) });
+
+      return words.join(' ');
     }
   })
   .filter('capitalize', function() {
@@ -467,6 +472,15 @@ angular
         data: { type: 'service', method: 'save_order', id: id, projects: projects }
       });
     };
+
+
+    this.getRelatedCats = function() {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'related', method: 'list'}
+      });
+    }
 
   })
   .service('Toast', function ($mdToast) {
@@ -951,8 +965,9 @@ angular
     $scope.activeTab = null;
     $scope.saving = false;
     $scope.timeStamp = new Date().getTime();
-    $scope.projectRelated = null;
+    $scope.projectRelated = {};
     $scope.pendingUploads = {};
+    $scope.projectLoading = false;
     $scope.projectContent = {
       title: [''],
       subtitle: [''],
@@ -983,20 +998,41 @@ angular
     // Watch for project switching
     $scope.$watch('activeProject', function (newVal, oldVal) {
       if (newVal != '' && newVal !== null) {
+        $scope.projectLoading = true;
         $api.getProjectContent(newVal).then(function (response) {
           $scope.projectContent = response.data.data;
           $scope.timeStamp = new Date().getTime();
+        
 
-          $api.getProjectRelated(newVal).then(function (response) {
-            $scope.projectRelated = response.data.data;
+          $api.getRelatedCats(newVal).then(function (response) {
+            $scope.projectRelated['keys'] = response.data.data;
+
+            $api.getProjectRelated(newVal).then(function (response) {
+              $timeout(function() {
+                $scope.projectRelated['project_related_id'] = response.data.data['project_related_id'];
+                angular.forEach($scope.projectRelated['keys'], function(value, id) {
+                  $scope.projectRelated['keys'][id]['value'] = typeof response.data.data['project_related_key'] !== 'undefined' && response.data.data['project_related_key'][id] === true ? true : false;
+                });
+                $scope.projectLoading = false;
+              }, 1000);
+            }, function (response) {
+              $scope.projectLoading = false;
+              if(response.data.msg != '') {
+                Toast.showToast('error', response.data.msg);
+              } else {
+                Toast.showToast('error', 'Could not load related for project: ' + $scope.projects[parseInt(newVal) - 1].name, response.data.data);
+              }
+            });
           }, function (response) {
+            $scope.projectLoading = false;
             if(response.data.msg != '') {
               Toast.showToast('error', response.data.msg);
             } else {
-              Toast.showToast('error', 'Could not load data for project: ' + $scope.projects[parseInt(newVal) - 1].name, response.data.data);
+              Toast.showToast('error', 'Could not load related categories');
             }
           });
         }, function (response) {        
+          $scope.projectLoading = false;
           if(response.data.msg != '') {
             Toast.showToast('error', response.data.msg);
           } else {
@@ -1039,6 +1075,10 @@ angular
         fullscreen: true
       });
     }
+
+    $scope.setProjectRelatedKey = function (id) {
+      $scope.projectRelated['keys'][id]['value'] = ($scope.projectRelated['keys'][id]['value'] === true) ? false : true;
+  }
 
     $scope.updateSection = function (type, id, value) {
       $scope.projectContent[type][id].value = value;
@@ -1101,8 +1141,11 @@ angular
 
       $timeout(function () {
         $api.saveProjectRelated($scope.activeProject, $scope.projectRelated).then(function (response) {
+          $scope.projectRelated['project_related_id'] = response.data.data['project_related_id'];
+          angular.forEach($scope.projectRelated['keys'], function(value, id) {
+            $scope.projectRelated['keys'][id]['value'] = typeof response.data.data['project_related_key'] !== 'undefined' && response.data.data['project_related_key'][id] === true ? true : false;
+          });
           $scope.saving = false;
-          $scope.projectRelated = response.data.data;
         }, function (response) {
           $scope.saving = false;
           if(response.data.msg != '') {
@@ -1154,6 +1197,7 @@ angular
     $scope.activeService = null;
     $scope.services = [];
     $scope.serviceContent = {'id': 0, 'content': '', 'delete': false};
+    $scope.serviceRelated = {};
     $scope.saving = false;
     $scope.serviceLoading = false;
     $scope.contentEditor = null;
@@ -1180,18 +1224,33 @@ angular
           $scope.serviceContent = response.data.data;
 
           $api.getServiceProjects(newVal).then(function (response) {
-            $scope.serviceProjects = response.data.data == null ? [] : response.data.data;
-            $api.getServiceRelated(newVal).then(function (response) {
-              $timeout(function() {
-                $scope.serviceRelated = response.data.data;
+            $scope.serviceProjects = response.data.data;
+
+            $api.getRelatedCats(newVal).then(function (response) {
+              $scope.serviceRelated['keys'] = response.data.data;
+  
+              $api.getServiceRelated(newVal).then(function (response) {
+                $timeout(function() {
+                  $scope.serviceRelated['service_related_id'] = response.data.data['service_related_id'];
+                  angular.forEach($scope.serviceRelated['keys'], function(value, id) {
+                    $scope.serviceRelated['keys'][id]['value'] = typeof response.data.data['service_related_key'] !== 'undefined' && response.data.data['service_related_key'][id] === true ? true : false;
+                  });
                 $scope.serviceLoading = false;
-              }, 1000);
+                }, 1000);
+              }, function (response) {
+                $scope.serviceLoading = false;
+                if(response.data.msg != '') {
+                  Toast.showToast('error', response.data.msg);
+                } else {
+                  Toast.showToast('error', 'Could not load related for service: ' + newVal.charAt(0).toUpperCase(), response.data.data);
+                }
+              });
             }, function (response) {
               $scope.serviceLoading = false;
               if(response.data.msg != '') {
                 Toast.showToast('error', response.data.msg);
               } else {
-                Toast.showToast('error', 'Could not load related for service: ' + newVal.charAt(0).toUpperCase(), response.data.data);
+                Toast.showToast('error', 'Could not load related categories');
               }
             });
           }, function (response) {
@@ -1229,10 +1288,10 @@ angular
           $scope.saveRelated();
           break;
         case 'order':
-          $scope.saveRelated();
+          $scope.saveOrder();
           break;
         default:
-          Toast.showToast('error', 'Error saving changes');
+          Toast.showToast('error', 'Invalid section to save');
       }
     }
 
@@ -1247,57 +1306,77 @@ angular
       ]
     };
 
-    $scope.addContent = function() {
-      $scope.serviceContent.push({'title': '', 'content': ''});
-    }
-
-    $scope.deleteContent = function(idx) {
-      $scope.serviceContent[idx]['delete'] = true;
-
-      $scope.saveContent();
-    }
-
-    $scope.toggleRelatedCheckbox = function (related) {
-      if($scope.serviceRelated[related] == 0) {
-        $scope.serviceRelated[related] = 1;
-      } else {
-        $scope.serviceRelated[related] = 0;
-      }
-    }
-
-    $scope.save = function () {
+    $scope.saveRelated = function() {
       $scope.saving = true;
 
-      $timeout(function () {
-        $api.saveServiceContent($scope.activeService, $scope.serviceContent).then(function (response) {
-            $api.saveServiceOrder($scope.activeService, $scope.serviceProjects).then(function (response) {
-              $api.saveServiceRelated($scope.activeService, $scope.serviceRelated).then(function (response) {
-                $scope.saving = false;
-              }, function (response) {
-                $scope.saving = false;
-                if(response.data.msg != '') {
-                  Toast.showToast('error', response.data.msg);
-                } else {
-                  Toast.showToast('error', 'Error updating service related categories', response.data.data);
-                }
-              });
-            }, function (response) {
-              $scope.saving = false;
-              if(response.data.msg != '') {
-                Toast.showToast('error', response.data.msg);
-              } else {
-                Toast.showToast('error', 'Error updating service project order', response.data.data);
-              }
-            });
+      $api.saveServiceRelated($scope.activeService, $scope.serviceRelated).then(function (response) {
+        $scope.serviceRelated['service_related_id'] = response.data.data['service_related_id'];
+        angular.forEach($scope.serviceRelated['keys'], function(value, id) {
+          $scope.serviceRelated['keys'][id]['value'] = typeof response.data.data['service_related_key'] !== 'undefined' && response.data.data['service_related_key'][id] === true ? true : false;
+        });
+
+        $api.getServiceProjects(newVal).then(function (response) {
+          $timeout(function() {
+            $scope.serviceProjects = response.data.data;
+            $scope.saving = false;
+          }, 1000);
         }, function (response) {
-          $scope.saving = false;
+          $scope.serviceLoading = false;
           if(response.data.msg != '') {
             Toast.showToast('error', response.data.msg);
           } else {
-            Toast.showToast('error', 'Error updating service content', response.data.data);
+            Toast.showToast('error', 'Could not load projects for service: ' + newVal.charAt(0).toUpperCase(), response.data.data);
           }
         });
-      }, 500);
+      }, function (response) {
+        $scope.saving = false;
+        if(response.data.msg != '') {
+          Toast.showToast('error', response.data.msg);
+        } else {
+          Toast.showToast('error', 'Error updating service related categories', response.data.data);
+        }
+      });
+    }
+
+    $scope.saveOrder = function () {
+      $scope.saving = true;
+
+      $api.saveServiceOrder($scope.activeService, $scope.serviceProjects).then(function (response) {
+        $timeout(function() {
+          $scope.serviceProjects = response.data.data;
+          $scope.saving = false;
+        }, 1000);
+      }, function (response) {
+        $scope.saving = false;
+        if(response.data.msg != '') {
+          Toast.showToast('error', response.data.msg);
+        } else {
+          Toast.showToast('error', 'Error updating service project order', response.data.data);
+        }
+      });
+    }
+
+    $scope.saveContent = function () {
+      $scope.saving = true;
+      $api.saveServiceContent($scope.activeService, $scope.serviceContent).then(function (response) {
+        $timeout(function() {
+          $scope.serviceContent = response.data.data;
+          $scope.saving = false;
+        }, 1000);
+      }, function (response) {
+        $scope.saving = false;
+        if(response.data.msg != '') {
+          Toast.showToast('error', response.data.msg);
+        } else {
+          Toast.showToast('error', 'Error updating service content', response.data.data);
+        }
+      });
+    }
+
+    // Utilities
+
+    $scope.setServiceRelatedKey = function (id) {
+        $scope.serviceRelated['keys'][id]['value'] = ($scope.serviceRelated['keys'][id]['value'] === true) ? false : true;
     }
 
     $scope.onUpdate = function($evt) {

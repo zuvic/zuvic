@@ -50,75 +50,44 @@ if(!getLogin($db)) {
     </div>
 
     <div layout="row" layout-padding layout-align="center center" flex="80">
-      <div class="content" flex md-whiteframe="4">
+      <div class="content main-container" ng-class="{'loading': serviceLoading === true}" flex md-whiteframe="4">
         <md-tabs md-dynamic-height md-border-bottom>
           <md-tab label="content" md-on-select="onTabChanges('content')" ng-disabled="activeService === null">
             <md-content class="section-wrapper" layout-padding>
               <div layout="column" layout-align="start start">
                 <div class="content-sections" layout="column" layout-fill ng-hide="activeService === null || serviceLoading === true">
-                  <!--  ng-repeat="(key, content) in serviceContent track by $index" -->
-                  <!-- <md-input-container class="md-block" flex-gt-sm>
-                    <label>Title</label>
-                    <input ng-model="content.title">
-                  </md-input-container> -->
-
                   <md-input-container>
-                    <!-- <label>Content</label> -->
                     <textarea id="service-content" ui-tinymce="tinymceOptions" ng-model="serviceContent.content" rows="20" md-select-on-focus></textarea>
                   </md-input-container>
-                  <!-- <div class="no-margin" layout="row" layout-align="end center">
-                    <md-input-container class="no-margin">
-                          <md-button class="md-warn no-margin" ng-click="deleteContent($index)" layout="row" layout-align="center center"><i class="material-icons" ng-hide="content.delete">delete_sweep</i><md-progress-circular class="md-warn" ng-show="content.delete" md-diameter="20px"></md-progress-circular></md-button>
-                    </md-input-container>
-                  </div> -->
                 </div>
               </div>
               <div class="no-margin" layout="row" layout-align="start center">
-                <!-- <md-input-container class="no-margin">
-                      <md-button class="md-raised md-primary" ng-click="addContent()" ng-disabled="activeService === null" layout="row" layout-align="center center"><i class="material-icons">add</i>&nbsp;Add</md-button>
-                </md-input-container> -->
               </div>
             </md-content>
           </md-tab>
 
           <md-tab label="order" md-on-select="onTabChanges('order')" ng-disabled="activeService === null">
             <md-content class="section-wrapper" layout-padding sv-root>
-              <!-- <md-divider ></md-divider> -->
-              <!-- <md-list class="md-dense" flex> -->
                 <ul ng-sortable="sortableConf">
                   <li ng-repeat="project in serviceProjects">
                     <div class="md-list-item-text" layout="row">
                       <md-button ng-disabled="serviceProjects.length < 2" class="md-fab md-mini md-primary">
                         <i class="material-icons">import_export</i>
                       </md-button>
-                      <p>{{ project.name }}</p>
-                      <!-- <h4>{{ item.what }}</h4>
-                      <p>{{ item.notes }}</p> -->
+                      <p>{{ project.project_site_name }}</p>
                     </div>
-                    <md-divider ></md-divider>
+                    <md-divider></md-divider>
                   </li>
-                  <!-- <span flex></span>
-                  <div layout="column" layout-align="center center">
-                    <md-button class="md-fab md-mini md-raised md-primary">
-                      <md-icon md-font-icon="material-icons" style="font-size:24px;">swap_vert</md-icon>
-                    </md-button>
-                  </div> -->
                 </ul>
-              <!-- </md-list> -->
-              <!-- <div class="no-margin" layout="row" layout-align="start center">
-                <md-input-container class="no-margin">
-                      <md-button class="md-raised md-primary" ng-click="addContent('challenges')" ng-disabled="activeProject === null" layout="row" layout-align="center center"><i class="material-icons">add</i>&nbsp;Add</md-button>
-                </md-input-container>
-              </div> -->
             </md-content>
           </md-tab>
 
           <md-tab label="related" md-on-select="onTabChanges('related')" ng-disabled="activeService === null">
             <md-content class="section-wrapper" layout-padding>
                 <div layout="row" layout-wrap flex>
-                  <div flex="100" ng-repeat="(related, value) in serviceRelated track by $index">
-                    <md-checkbox ng-hide="related == 'services_related_site_id'" ng-checked="value > 0" ng-click="toggleRelatedCheckbox(related)">
-                     {{ related | servicekey }}
+                  <div flex="100" ng-repeat="(id, related) in serviceRelated.keys track by $index">
+                    <md-checkbox ng-checked="related.value" ng-click="setServiceRelatedKey(id)">
+                     {{ related.related_cats_name | relatedkeys }}
                     </md-checkbox>
                   </div>
                 </div>
