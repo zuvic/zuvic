@@ -135,7 +135,9 @@ try {
         <div class="inner-wrapper">
             <div class="text-wrapper">
                 <div class="title">
-                    <?php echo isset($project_content['title']) ? $project_content['title'][0] : $project_name_url; ?>
+                    <?php
+                    echo isset($project_content['title']) && $project_content['title'][0] != '' ? $project_content['title'][0] : $project_name_url; 
+                    ?>
                 </div>
                 <div class="sub-title">
                     <?php echo $project_content['sub-title'][0] ?>

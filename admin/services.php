@@ -27,7 +27,7 @@ if(!getLogin($db)) {
 
   <div class="main" ng-controller="ServicesCtrl" layout="row" flex="100">
   <div layout="column" flex="100">
-    <md-progress-linear md-mode="indeterminate" ng-hide="serviceLoading === false"></md-progress-linear>
+    <md-progress-linear md-mode="indeterminate" class="child-page-loader" ng-hide="serviceLoading === false"></md-progress-linear>
 
     <div layout="row" flex>
     <div layout="row" layout-padding layout-align="center center" flex="20">
@@ -53,7 +53,7 @@ if(!getLogin($db)) {
       <div class="content main-container" ng-class="{'loading': serviceLoading === true}" flex md-whiteframe="4">
         <md-tabs md-dynamic-height md-border-bottom>
           <md-tab label="content" md-on-select="onTabChanges('content')" ng-disabled="activeService === null">
-            <md-content class="section-wrapper" layout-padding>
+            <md-content class="section-wrapper" ng-class="{'layout-padding': activeService !== null}">
               <div layout="column" layout-align="start start">
                 <div class="content-sections" layout="column" layout-fill ng-hide="activeService === null || serviceLoading === true">
                   <md-input-container>

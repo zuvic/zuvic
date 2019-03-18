@@ -3,6 +3,10 @@ if(!isset($_SESSION)) {
     session_start(); 
 }
 
+require_once(__DIR__ . '/../settings.inc');
+
+global $settings;
+
 ?>
 <html lang="en" ng-app="AngularCMS">
 
@@ -15,6 +19,10 @@ if(!isset($_SESSION)) {
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="shortcut icon" href="/images/favicon_admin.png">
   <base href="/">
+
+  <script>
+    var base_url = '<?php echo $settings['base_url']; ?>';
+  </script>
 </head>
 
 <body class="main">

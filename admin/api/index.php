@@ -140,6 +140,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               $response['data'] = getProjectInfo($db);
             }
             break;
+          } else if($data['method'] == 'rename' && isset($data['id']) && isset($data['name'])) {
+            http_response_code(200);
+            if(renameProject($db, $data['id'], $data['name'])) {
+              $response['data'] = getProjectInfo($db);
+            }
+            break;
           } else if($data['method'] == 'delete' && isset($data['name'])) {
             http_response_code(200);
             if(deleteProject($db, $data['name'])) {

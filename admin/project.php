@@ -27,7 +27,7 @@ if(!getLogin($db)) {
 
   <div class="main" ng-controller="ProjectCtrl" layout="row" flex="100">
   <div layout="column" flex="100">
-    <md-progress-linear md-mode="indeterminate" ng-hide="projectLoading === false"></md-progress-linear>
+    <md-progress-linear md-mode="indeterminate" class="child-page-loader" ng-hide="projectLoading === false"></md-progress-linear>
 
     <div layout="row" flex>
     <div layout="row" layout-padding layout-align="center center" flex="20">
@@ -65,12 +65,21 @@ if(!getLogin($db)) {
         <md-tabs md-dynamic-height md-border-bottom>
           <md-tab label="header" md-on-select="onTabChanges('content')" ng-disabled="activeProject === null">
             <md-content class="md-padding" layout="column">
+            <div layout="row" class="no-margin">
+              <p class="no-margin label smaller-text">URL Preview</p><br>
+            </div>
+            <div layout="row">
+              <md-button class="md-primary" ng-disabled="activeProject === null" ng-href="{{projectURL}}" target="_blank">
+                {{ projectURL }}
+              </md-button>&nbsp;&nbsp;&nbsp;
+              <div layout="row" flex="10" layout-align="center center">
+                <md-button class="md-raised md-warn md-primary" ng-disabled="activeProject === null" ng-click="renameProject()" layout="row" layout-align="center center">
+                  Rename
+                </md-button>
+              </div>
+            </div>
               <md-input-container>
-                <label>URL</label>
-                <input ng-model="projectURL" ng-disabled="true">
-              </md-input-container>
-              <md-input-container>
-                <label>Title</label>
+                <label>Page Name</label>
                 <input ng-model="projectContent.title.value">
               </md-input-container>
               <md-input-container>

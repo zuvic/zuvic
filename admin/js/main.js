@@ -367,6 +367,14 @@ angular
       });
     };
 
+    this.renameProject = function (id, name) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'project', method: 'rename', id: id, name: name }
+      });
+    };
+
     this.deleteProject = function (name) {
       return $http({
         method: 'POST',
@@ -960,6 +968,10 @@ angular
     $scope.newProject = {
       name: null
     };
+    $scope.projectRenamed = {
+      name: null,
+      urlPreview: null
+    };
     $scope.delete = '';
     $scope.activeProject = null;
     $scope.activeTab = null;
@@ -998,7 +1010,7 @@ angular
         $api.getProjectContent(newVal).then(function (response) {
           $scope.projectContent = response.data.data;
           $scope.timeStamp = new Date().getTime();
-          $scope.projectURL = "/project/" + $scope.projects[newVal]['name'].split(" ").join("-") + "/";
+          $scope.projectURL = window.location.protocol + "//" + base_url + "/project/" + $scope.projects[newVal]['name'].split(" ").join("-") + "/";
         
 
           $api.getRelatedCats(newVal).then(function (response) {
@@ -1072,6 +1084,19 @@ angular
         fullscreen: true
       });
     }
+
+    $scope.renameProject = function() {
+      $mdDialog.show({
+        controller: 'dialogProjectCtrl',
+        templateUrl: 'rename_project.tmpl.html',
+        parent: angular.element(document.body),
+        clickOutsideToClose: true,
+        scope: $scope,
+        preserveScope: true,
+        fullscreen: true
+      });
+    }
+
 
     $scope.setProjectRelatedKey = function (id) {
       $scope.projectRelated['keys'][id]['value'] = ($scope.projectRelated['keys'][id]['value'] === true) ? false : true;
@@ -1405,7 +1430,7 @@ angular
               $scope.working = false;
               $scope.projects = [];
               angular.forEach(response.data.data, function (value, key) {
-                $scope.projects[key] = value;
+                $scope.projects[parseInt(value.id)] = value;
               });
               Toast.showToast('success', 'Successfully created project: ' + $scope.newProject.name);
               $scope.newProject.name = '';
@@ -1432,7 +1457,7 @@ angular
               $scope.working = false;
               $scope.projects = [];
               angular.forEach(response.data.data, function (value, key) {
-                $scope.projects[key] = value;
+                $scope.projects[parseInt(value.id)] = value;
               });
               Toast.showToast('success', 'Successfully deleted project: ' + $scope.delete);
               $scope.delete = '';
@@ -1450,6 +1475,43 @@ angular
           Toast.showToast('error', 'You must enter a project name');
         }
       }
+
+      $scope.renameSubmit = function() {
+        var oldName = $scope.projects[$scope.activeProject]['name'];
+        if($scope.renameProjectForm.$valid) {
+          $scope.working = true;
+          $api.renameProject($scope.activeProject, $scope.projectRenamed.name).then(function (response) {
+            $timeout(function() {
+              $scope.working = false;
+              $scope.projects = [];
+              angular.forEach(response.data.data, function (value, key) {
+                $scope.projects[parseInt(value.id)] = value;
+              });
+              $scope.projectURL = window.location.protocol + "//" + base_url + "/project/" + $scope.projects[$scope.activeProject]['name'].split(" ").join("-") + "/";
+              Toast.showToast('success', 'Successfully renamed project from: ' + oldName + 
+              ' to ' + $scope.projectRenamed.name);
+              $scope.projectRenamed.name = '';
+              $mdDialog.hide();
+            }, 500);
+          }, function (response) {
+            $scope.working = false;
+            if(response.data.msg != '') {
+              Toast.showToast('error', response.data.msg);
+            } else {
+              Toast.showToast('error', 'Error renaming project', response.data.data);
+            }
+          });
+        } else {
+          Toast.showToast('error', 'You must enter a project name');
+        }
+      }
+
+      $scope.$watch(function() {
+        return $scope.projectRenamed.name;
+      }, function(newVal, oldVal) {
+        if(typeof newVal === 'undefined' || newVal === null) return;
+        $scope.projectRenamed.urlPreview = "/project/" + newVal.split(" ").join("-") + "/";
+      });
   }])
   .controller('UploadCtrl', function ($scope, $mdDialog, Upload, $timeout, Toast) {
       

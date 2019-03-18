@@ -177,6 +177,37 @@ function deleteProject(PDO $db, String $name) {
   return $success;
 }
 
+function renameProject(PDO $db, String $id, String $name) {
+  global $response;
+  $success = false;
+  $existing_projects = getProjectInfo($db);
+
+  foreach($existing_projects as $key => $project) {
+    if($project['name'] == $name) {
+      http_response_code(500);
+      $response['msg'] = 'This project name already exists';
+
+      return false;
+    }
+  }
+
+  $query = $db->prepare(<<<SQL
+UPDATE project_site SET project_site_name = ? WHERE project_site_id = ?
+SQL
+);
+  $success = $query->execute(array(
+    $name,
+    $id));
+
+  if(!$success) {
+    http_response_code(500);
+    $response['msg'] = 'Error updating project name: ' . $query->errorInfo;
+  }
+
+  return $success;
+}
+
+
 function saveProjectContent(PDO $db, String $id, Array $content) {
 
   try {

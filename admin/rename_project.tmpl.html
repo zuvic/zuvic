@@ -1,0 +1,40 @@
+<md-dialog class="login-dialog">
+    <md-toolbar>
+      <div class="md-toolbar-tools" layout="row" layout-align="center center">
+        <h3 ng-show="!working">Rename Project</h3>
+        <md-progress-circular class="md-hue-1" ng-show="working" md-theme="progressTheme" md-diameter="20px"></md-progress-circular>
+        <!-- <span flex></span> -->
+      </div>
+    </md-toolbar>
+
+    <div ng-class="{'active': !working }" class="fields">
+      <md-dialog-content>
+        <form name="renameProjectForm">
+        <div class="md-dialog-content" layout="column">
+            <div class="md-block">
+              Note that this change will affect the shareable URL
+            </div>
+          <div class="md-block">
+            <md-input-container eopd-enter="renameSubmit()" class="md-block">
+              <label>Name</label>
+              <input required name="name" ng-model="projectRenamed.name">
+              <div ng-messages="renameProjectForm.name.$error">
+                <div ng-message-exp="['required']">You must enter a project name</div>
+              </div>
+            </md-input-container>
+            <md-input-container ng-dsabled="true" class="md-block">
+              <label>URL Preview</label>
+              <input required name="name" ng-model="projectRenamed.urlPreview">
+            </md-input-container>
+          </div>
+        </div>
+        </form>
+      </md-dialog-content>
+
+      <md-dialog-actions ng-class="{'active': !working }" class="fields" layout="row" layout-align="center center">
+        <md-button class="md-raised md-primary" eopd-enter="renameSubmit()" ng-click="renameSubmit()" layout="row" layout-align="center center">
+          <span>submit</span>
+        </md-button>
+      </md-dialog-actions>
+    </div>
+</md-dialog>

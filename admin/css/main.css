@@ -222,10 +222,22 @@ md-menu-item .md-button.active:hover {
   z-index: 30 !important;
 }
 
+.child-page-loader {
+  z-index: 20;
+}
 
 .no-margin {
   margin: 0;
   padding: 0;
+}
+
+p.smaller-text {
+  font-size: 11px;
+  line-height: 3;
+}
+
+p.label {
+  color: rgba(0,0,0,0.54);
 }
 
 *.unselectable {
