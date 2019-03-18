@@ -1312,7 +1312,7 @@ angular
       $api.saveServiceRelated($scope.activeService, $scope.serviceRelated).then(function (response) {
         $scope.serviceRelated['service_related_id'] = response.data.data['service_related_id'];
         angular.forEach($scope.serviceRelated['keys'], function(value, id) {
-          $scope.serviceRelated['keys'][id]['value'] = typeof response.data.data['service_related_key'] !== 'undefined' && response.data.data['service_related_key'][id] === true ? true : false;
+          $scope.serviceRelated['keys'][id]['value'] = typeof response.data.data['service_related_key'] !== 'undefined' && response.data.data['service_related_key'] !== null && response.data.data['service_related_key'][id] === true ? true : false;
         });
 
         $api.getServiceProjects(newVal).then(function (response) {
