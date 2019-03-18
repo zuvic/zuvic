@@ -39,7 +39,7 @@ if(!getLogin($db)) {
             <label><em>Project</em></label>
             <md-select ng-model="activeProject">
               <md-option></md-option>
-              <md-option ng-repeat="project in projects | orderBy:'name'" ng-value="project.id">
+              <md-option ng-repeat="project in projects | filter: ''| orderBy:'name'" ng-value="project.id">
                 {{project.name}}
               </md-option>
             </md-select>
@@ -65,6 +65,10 @@ if(!getLogin($db)) {
         <md-tabs md-dynamic-height md-border-bottom>
           <md-tab label="header" md-on-select="onTabChanges('content')" ng-disabled="activeProject === null">
             <md-content class="md-padding" layout="column">
+              <md-input-container>
+                <label>URL</label>
+                <input ng-model="projectURL" ng-disabled="true">
+              </md-input-container>
               <md-input-container>
                 <label>Title</label>
                 <input ng-model="projectContent.title.value">

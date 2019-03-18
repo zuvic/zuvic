@@ -968,6 +968,7 @@ angular
     $scope.projectRelated = {};
     $scope.pendingUploads = {};
     $scope.projectLoading = false;
+    $scope.projectURL = '';
     $scope.projectContent = {
       title: [''],
       subtitle: [''],
@@ -977,15 +978,10 @@ angular
       solutions: []
     }
 
-
-    $scope.$watch(function () { return $scope.pendingUploads; }, function (newVal, oldVal) {
-      console.log('Project level:', newVal);
-    });
-
     // Load available projects menu
     $api.getProjectSite().then(function (response) {
       angular.forEach(response.data.data, function (value, key) {
-        $scope.projects[key] = value;
+        $scope.projects[parseInt(value.id)] = value;
       });
     }, function (response) {
       if(response.data.msg != '') {
@@ -1002,6 +998,7 @@ angular
         $api.getProjectContent(newVal).then(function (response) {
           $scope.projectContent = response.data.data;
           $scope.timeStamp = new Date().getTime();
+          $scope.projectURL = "/project/" + $scope.projects[newVal]['name'].split(" ").join("-") + "/";
         
 
           $api.getRelatedCats(newVal).then(function (response) {
@@ -1612,10 +1609,6 @@ angular
               $scope.delete[key] = false;
             });
           }
-        });
-
-        $scope.$watch(function () { return $scope.pendingUploads; }, function (newVal, oldVal) {
-            console.log('Img:', newVal);
         });
 
         $scope.onUpdate = function($evt) {
