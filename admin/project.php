@@ -26,7 +26,10 @@ if(!getLogin($db)) {
 <body class="main" ng-app="AngularCMS">
 
   <div class="main" ng-controller="ProjectCtrl" layout="row" flex="100">
+  <div layout="column" flex="100">
+    <md-progress-linear md-mode="indeterminate" ng-hide="projectLoading === false"></md-progress-linear>
 
+    <div layout="row" flex>
     <div layout="row" layout-padding layout-align="center center" flex="20">
 
       <div class="content-wrapper" flex>
@@ -58,9 +61,9 @@ if(!getLogin($db)) {
 
     <div layout="row" layout-padding layout-align="center center" flex="80">
 
-      <div class="content" flex md-whiteframe="4">
+      <div class="content main-container" ng-class="{'loading': projectLoading === true}" flex md-whiteframe="4">
         <md-tabs md-dynamic-height md-border-bottom>
-          <md-tab label="header" md-on-select="onTabChanges('content')">
+          <md-tab label="header" md-on-select="onTabChanges('content')" ng-disabled="activeProject === null">
             <md-content class="md-padding" layout="column">
               <md-input-container>
                 <label>Title</label>
@@ -73,7 +76,7 @@ if(!getLogin($db)) {
             </md-content>
           </md-tab>
 
-          <md-tab label="challenges" md-on-select="onTabChanges('content')">
+          <md-tab label="challenges" md-on-select="onTabChanges('content')" ng-disabled="activeProject === null" >
             <md-content class="section-wrapper" layout-padding>
               <div layout="column" layout-align="start start">
                 <div class="content-sections" layout="column" ng-repeat="(key, challenge) in projectContent.challenges track by $index" ng-show="challenge != null || challenge !== undefined" layout-fill>
@@ -96,7 +99,7 @@ if(!getLogin($db)) {
             </md-content>
           </md-tab>
 
-          <md-tab label="solutons" md-on-select="onTabChanges('content')">
+          <md-tab label="solutons" md-on-select="onTabChanges('content')" ng-disabled="activeProject === null">
           <md-content class="section-wrapper" layout-padding>
               <div layout="column" layout-align="start start">
                 <div class="content-sections" layout="column" ng-repeat="(key, solution) in projectContent.solutions track by $index" layout-fill>
@@ -119,7 +122,7 @@ if(!getLogin($db)) {
             </md-content>
           </md-tab>
 
-          <md-tab label="highlights" md-on-select="onTabChanges('content')">
+          <md-tab label="highlights" md-on-select="onTabChanges('content')" ng-disabled="activeProject === null">
           <md-content class="section-wrapper" layout-padding>
               <div layout="column" layout-align="start start">
                 <div class="content-sections" layout="column" ng-repeat="(key, highlight) in projectContent.highlights track by $index" layout-fill>
@@ -142,7 +145,7 @@ if(!getLogin($db)) {
             </md-content>
           </md-tab>
 
-          <md-tab label="images" md-on-select="onTabChanges('content')">
+          <md-tab label="images" md-on-select="onTabChanges('content')" ng-disabled="activeProject === null">
             <md-content class="section-wrapper">
               <md-subheader class="md-primary">
                 <div layout="row" layout-align="space-between center">
@@ -154,12 +157,12 @@ if(!getLogin($db)) {
             </md-content>
           </md-tab>
 
-          <md-tab label="related" md-on-select="onTabChanges('related')">
+          <md-tab label="related" md-on-select="onTabChanges('related')" ng-disabled="activeProject === null">
             <md-content class="section-wrapper" layout-padding>
                 <div layout="row" layout-wrap flex>
-                  <div flex="100" ng-repeat="(service, value) in projectRelated track by $index">
-                    <md-checkbox ng-hide="service == 'project_related_site_id' || service == 'project_related_id'" ng-checked="value > 0" ng-click="toggleRelatedCheckbox(service)">
-                     {{ service | projectkey }}
+                  <div flex="100" ng-repeat="(id, related) in projectRelated.keys track by $index">
+                    <md-checkbox ng-checked="related.value" ng-click="setProjectRelatedKey(id)">
+                     {{ related.related_cats_name | relatedkeys }}
                     </md-checkbox>
                   </div>
                 </div>
@@ -172,6 +175,8 @@ if(!getLogin($db)) {
           </md-input-container>
         </div>
       </div>
+    </div>
+    </div>
     </div>
   </div>
 
