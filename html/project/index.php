@@ -1,6 +1,8 @@
 <?php
 
 require_once(__DIR__ . '/../../settings.inc');
+require_once(__DIR__ . '/../../admin/api/index.php');
+require_once(__DIR__ . '/../../admin/api/projects.php');
 
 global $db_settings;
 
@@ -56,56 +58,7 @@ try {
   echo "Error: " . $e;
 }
 
-try {
-    $query = $db->prepare('Select * from project_related where project_related_site_id=?');
-    $query->execute(array($project_site_id));
-  
-    while($row=$query->fetch(PDO::FETCH_ASSOC)) {
-        foreach($row as $key => $value) {
-            $project_related[$key] = $value;
-        }
-    }
-} catch (PDOException  $e ) {
-  echo "Error: " . $e;
-}
-
-try {
-
-    $primary = '';
-
-    foreach($project_related as $related_key => $related) {
-        if($related_key == 'project_related_id' || $related_key == 'project_related_site_id') continue;
-
-        if($project_related[$related_key] > 0) {
-            $primary .= $related_key . ' > 0 AND ';
-        }
-
-    }
-
-    $primary = substr($primary, 0, -5);
-
-    $stmt = 'Select * from project_related where ' . $primary;
-    $query = $db->prepare($stmt);
-    $query->execute();
-        
-    while($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        if ($project_site_id == $row['project_related_site_id']) continue;
-        $related_projects[$row['project_related_id']] = array();
-
-        foreach($row as $key => $value) {
-            $related_projects[$row['project_related_id']][$key] = $value;
-        }
-
-        $nested_query = $db->prepare('Select project_site_name from project_site where project_site_id = ?');
-        $nested_query->execute(array($row['project_related_site_id']));
-
-        while($nested_row = $nested_query->fetch(PDO::FETCH_ASSOC)) {
-            $related_projects[$row['project_related_id']]['title'] = $nested_row['project_site_name'];
-        }
-    }
-} catch (PDOException  $e ) {
-  echo "Error: " . $e;
-}
+$related_projects = getRelatedProjects($db, $project_site_id);
 
 try {
     $query = $db->prepare('Select * from project_content where project_content_site_id=?');
@@ -121,7 +74,7 @@ try {
 } catch (PDOException  $e ) {
   echo "Error: " . $e;
 }
-  echo "";
+
 ?>
 <html lang="en">
 
@@ -261,10 +214,12 @@ HTML;
                 Related Projects
             </div>
             <?php 
-                foreach($related_projects as $related_key => $related) {
-                    $url = '/project/' . implode('-', explode(' ', $related['title'])) . '/';
+                shuffle($related_projects);
 
-                    echo '<a href="' . $url . '"><div class="project" style="background-image: url(\'/images/'.$related['project_related_site_id'].'/1.jpg\'), url(\'/images/blank.jpg\')"><div class="caption">'.$related['title'].'</div></div></a>';
+                foreach($related_projects as $related_key => $related) {
+                    $url = '/project/' . implode('-', explode(' ', $related['name'])) . '/';
+
+                    echo '<a href="' . $url . '"><div class="project" style="background-image: url(\'/images/'.$related['id'].'/1.jpg\'), url(\'/images/blank.jpg\')"><div class="caption">'.$related['name'].'</div></div></a>';
                 }    
             ?>
         </div>

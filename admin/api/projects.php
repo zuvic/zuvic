@@ -436,3 +436,52 @@ function deleteImage($db, $filename, $projectID) {
 
   return $success;
 }
+
+function getRelatedProjects(PDO $db, String $id) {
+  global $response;
+
+  $project_related = getProjectRelated($db, $id);
+  $related_projects = array();
+  $success = false;
+
+  if(!is_array($project_related) || sizeof($project_related) <= 0 || !isset($project_related['project_related_key'])) return [];
+
+  $project_key = '';
+
+  foreach($project_related['project_related_key'] as $related_cat_id => $val) {
+    if($val !== true) continue;
+    $key = preg_replace('/\{|\}/', '', json_encode([$related_cat_id => $val]));
+
+    $project_key .= "pr.project_related_key LIKE '%" . $key . "%' OR ";
+  }
+
+  try {
+    $project_query = $db->prepare(sprintf(<<<SQL
+SELECT p.project_site_name AS `project_site_name`, pr.project_related_site_id AS project_site_id
+FROM project_related pr
+
+LEFT JOIN project_site p
+ON pr.project_related_site_id = p.project_site_id
+
+WHERE %s
+SQL
+, preg_replace('/\sOR\s$/', '', $project_key)));
+
+    $success = $project_query->execute([$id]);
+  
+    if($success) {
+      while($row = $project_query->fetch(PDO::FETCH_ASSOC)) {
+          $related_projects[] = array('name' => $row['project_site_name'], 'id' => $row['project_site_id']);
+      }
+    }
+  } catch (PDOException  $e ) {
+    echo "Error: " . $e;
+  }
+
+  if(!$success) {
+    http_response_code(500);
+    $response['msg'] = 'Error getting related projects';
+  }
+
+  return $related_projects;
+}
