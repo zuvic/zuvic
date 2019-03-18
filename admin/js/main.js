@@ -1011,7 +1011,7 @@ angular
               $timeout(function() {
                 $scope.projectRelated['project_related_id'] = response.data.data['project_related_id'];
                 angular.forEach($scope.projectRelated['keys'], function(value, id) {
-                  $scope.projectRelated['keys'][id]['value'] = typeof response.data.data['project_related_key'] !== 'undefined' && response.data.data['project_related_key'][id] === true ? true : false;
+                  $scope.projectRelated['keys'][id]['value'] = typeof response.data.data['project_related_key'] !== 'undefined' && response.data.data['project_related_key'] !== null && response.data.data['project_related_key'][id] === true ? true : false;
                 });
                 $scope.projectLoading = false;
               }, 1000);
@@ -1143,7 +1143,7 @@ angular
         $api.saveProjectRelated($scope.activeProject, $scope.projectRelated).then(function (response) {
           $scope.projectRelated['project_related_id'] = response.data.data['project_related_id'];
           angular.forEach($scope.projectRelated['keys'], function(value, id) {
-            $scope.projectRelated['keys'][id]['value'] = typeof response.data.data['project_related_key'] !== 'undefined' && response.data.data['project_related_key'][id] === true ? true : false;
+            $scope.projectRelated['keys'][id]['value'] = typeof response.data.data['project_related_key'] !== 'undefined' && response.data.data['project_related_key'] !== null && response.data.data['project_related_key'][id] === true ? true : false;
           });
           $scope.saving = false;
         }, function (response) {
