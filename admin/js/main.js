@@ -1233,7 +1233,7 @@ angular
                 $timeout(function() {
                   $scope.serviceRelated['service_related_id'] = response.data.data['service_related_id'];
                   angular.forEach($scope.serviceRelated['keys'], function(value, id) {
-                    $scope.serviceRelated['keys'][id]['value'] = typeof response.data.data['service_related_key'] !== 'undefined' && response.data.data['service_related_key'][id] === true ? true : false;
+                    $scope.serviceRelated['keys'][id]['value'] = typeof response.data.data['service_related_key'] !== 'undefined' && response.data.data['service_related_key'] !== null && response.data.data['service_related_key'][id] === true ? true : false;
                   });
                 $scope.serviceLoading = false;
                 }, 1000);
