@@ -1315,7 +1315,7 @@ angular
           $scope.serviceRelated['keys'][id]['value'] = typeof response.data.data['service_related_key'] !== 'undefined' && response.data.data['service_related_key'] !== null && response.data.data['service_related_key'][id] === true ? true : false;
         });
 
-        $api.getServiceProjects(newVal).then(function (response) {
+        $api.getServiceProjects($scope.activeService).then(function (response) {
           $timeout(function() {
             $scope.serviceProjects = response.data.data;
             $scope.saving = false;
