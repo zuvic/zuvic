@@ -47,6 +47,11 @@ global $settings;
               <span flex layout="row" layout-align="center center">Services <i class="material-icons">keyboard_arrow_right</i></span>
             </md-button>
         </md-menu-item>
+        <md-menu-item>
+            <md-button ng-click="gotoPage('careers')" class="md-primary" ng-class="{'md-raised': currentPage == 'careers'}">
+              <span flex layout="row" layout-align="center center">Careers <i class="material-icons">keyboard_arrow_right</i></span>
+            </md-button>
+        </md-menu-item>
         <span flex></span>
         <md-menu-item layout="row" layout-align="center end">
             <md-button ng-click="showMenu()" ng-disabled="false" class="md-primary" class="active">
@@ -78,17 +83,11 @@ global $settings;
 
   <!-- Angular Material Library -->
   <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
-
-    <!-- <script src="vendor/jquery.min.js"></script>
-    <script src="vendor/jquery.simulate.js"></script>
-    <script src="vendor/jquery.simulate.ext.js"></script>
-    <script src="vendor/jquery.simulate.drag-n-drop.js"></script> -->
   
   <script src="//cloud.tinymce.com/5/tinymce.min.js?apiKey=71egil4mb6tjwbu71s3vi3mpwrlaodf8tpnr74vwqucoayjx"></script>
   <script type="text/javascript" src="bower_components/angular-ui-tinymce/src/tinymce.js"></script>
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>
-  <!-- <script src="https://kamilkp.github.io/angular-sortable-view/src/angular-sortable-view.js"></script> -->
   <script src="js/AngularSortable.js"></script>
   <script src="js/main.js"></script>
   <script src="js/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->

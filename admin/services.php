@@ -56,6 +56,7 @@ if(!getLogin($db)) {
             <md-content class="section-wrapper" ng-class="{'layout-padding': activeService !== null}">
               <div layout="column" layout-align="start start">
                 <div class="content-sections" layout="column" layout-fill ng-hide="activeService === null || serviceLoading === true">
+                  <md-subheader class="md-primary">Content</md-subheader>
                   <md-input-container>
                     <textarea id="service-content" ui-tinymce="tinymceOptions" ng-model="serviceContent.content" rows="20" md-select-on-focus></textarea>
                   </md-input-container>
@@ -117,14 +118,7 @@ if(!getLogin($db)) {
   <!-- Angular Material Library -->
   <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
 
-    <!-- <script src="vendor/jquery.min.js"></script>
-    <script src="vendor/jquery.simulate.js"></script>
-    <script src="vendor/jquery.simulate.ext.js"></script>
-    <script src="vendor/jquery.simulate.drag-n-drop.js"></script> -->
-
   <script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.6.0/Sortable.min.js"></script>
-  <!-- <script src="https://kamilkp.github.io/angular-sortable-view/src/angular-sortable-view.js"></script> -->
-  <!-- <script src="js/AngularSortable.js"></script> -->
   <script src="js/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
   <script src="js/ng-file-upload.js"></script>
 

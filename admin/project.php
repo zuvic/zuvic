@@ -69,7 +69,7 @@ if(!getLogin($db)) {
               <p class="no-margin label smaller-text">URL Preview</p><br>
             </div>
             <div layout="row">
-              <md-button class="md-primary" ng-disabled="activeProject === null" ng-href="{{projectURL}}" target="_blank">
+              <md-button class="md-primary" ng-disabled="activeProject === null" ng-href="{{ projectURL }}" target="_blank">
                 {{ projectURL }}
               </md-button>&nbsp;&nbsp;&nbsp;
               <div layout="row" flex="10" layout-align="center center">

@@ -45,6 +45,7 @@
   font-family: 'Oswald';
   font-size: 22px;
   text-align: left;
+  max-width: 50%;
   margin: 5px 10px;
 }
 

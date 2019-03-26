@@ -102,6 +102,31 @@ angular
           }]
         }
       })
+    .state('careers', {
+        url : '/careers',
+        templateUrl : 'careers.php',
+        controller : 'CareersCtrl',
+        data : { pageTitle: 'Admin | Careers' },
+        resolve: {
+          auth: ['$q', 'Login', '$rootScope', function ($q, Login, $rootScope) {
+            var d = $q.defer();
+
+            Login.status().then(function (response) {
+              if(eval($rootScope.login) == null) {
+                d.reject(false);
+              }
+    
+              d.resolve(true);
+            }, function(response) {
+              if(eval($rootScope.login) == null) {
+                d.reject(false);
+              }
+            });
+
+            return d.promise;
+          }]
+        }
+      })
       .state('reset', {
         url : '/reset?token',
         controller : 'ResetCtrl',
@@ -490,6 +515,56 @@ angular
       });
     }
 
+    // Careers API
+
+    this.getCareers = function () {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'careers', method: 'list' }
+      });
+    };
+
+    this.getCareerPosition = function (id) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'careers', method: 'get_position', id: id }
+      });
+    };
+
+    this.createPosition = function (name) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'careers', method: 'create_position', name: name }
+      });
+    };
+
+    this.deletePosition = function (name) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'careers', method: 'delete_position', name: name }
+      });
+    };
+
+    this.savePositionContent = function (id, content) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'careers', method: 'save_content', id: id, content: content }
+      });
+    };
+
+    this.saveCareerOrder = function (order) {
+      return $http({
+        method: 'POST',
+        url: 'api/',
+        data: { type: 'careers', method: 'save_order', order: order }
+      });
+    };
+
   })
   .service('Toast', function ($mdToast) {
     this.showToast = function (type, msg, details) {
@@ -599,6 +674,10 @@ angular
         case 'services':
           $rootScope.currentPage = 'services';
           $state.go('services');
+          break;
+        case 'careers':
+          $rootScope.currentPage = 'careers';
+          $state.go('careers');
           break;
         default:
           break;
@@ -1215,6 +1294,182 @@ angular
     };
 
   }])
+  .controller('CareersCtrl', ['$scope', '$mdDialog', 'Upload', '$timeout', 'Toast', 'API', function ($scope, $mdDialog, Upload, $timeout, Toast, $api) {
+
+    $scope.careers = [];
+    $scope.careerContent = {};
+    $scope.activePosition = null;
+    $scope.careerLoading = true;
+    $scope.saving = false;
+    $scope.activeTab = '';
+
+    $scope.duration = [
+      {'id': 1, 'name': 'Full Time'},
+      {'id': 2, 'name': 'Part Time'},
+      {'id': 3, 'name': 'Contract'}
+    ];
+
+    $scope.tinymceOptions = {
+      menubar: false,
+      plugins: "lists",
+      block_formats: 'Header=h3;Sub-Header=h4;Text=p',
+      toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help',
+      content_css: [
+        '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+        'css/services_mock.css'
+      ]
+    };
+
+    // Load available projects menu
+    $api.getCareers().then(function (response) {
+      angular.forEach(response.data.data, function (value, key) {
+        $scope.careers[key] = value;
+      });
+
+      $scope.careerLoading = false;
+    }, function (response) {
+      if(response.data.msg != '') {
+        Toast.showToast('error', response.data.msg);
+      } else {
+        Toast.showToast('error', 'Could not load careers', response.data.data);
+      }
+    });
+
+    // Watch for position switching
+    $scope.$watch('activePosition', function (newVal, oldVal) {
+      if (newVal != '' && newVal !== null) {
+        $scope.careerLoading = true;
+
+        $api.getCareerPosition(newVal).then(function (response) {
+          $timeout(function() {
+            $scope.careerContent = response.data.data;
+            $scope.careerLoading = false;
+          }, 1000);
+        }, function (response) {        
+          $scope.careerLoading = false;
+          if(response.data.msg != '') {
+            Toast.showToast('error', response.data.msg);
+          } else {
+            Toast.showToast('error', 'Could not load data for career position: ' + $scope.careerss[parseInt(newVal)].title, response.data.data);
+          }
+        });
+      }
+    });
+
+    $scope.save = function() {
+      switch($scope.activeTab) {
+        case 'content':
+        case 'header':
+          $scope.saving = true;
+          $api.savePositionContent($scope.activePosition, $scope.careerContent).then(function (response) {
+              $scope.careerContent = response.data.data;
+              $api.getCareers().then(function (response) {
+                $timeout(function() {
+                  $scope.saving = false;
+                  $scope.careers = [];
+                  angular.forEach(response.data.data, function (value, key) {
+                    $scope.careers[key] = value;
+                  });
+                
+                    Toast.showToast('success', 'Successfully saved content for position: ' + $scope.careers[$scope.activePosition].title);
+                }, 1000);
+              }, function (response) {
+                if(response.data.msg != '') {
+                  Toast.showToast('error', response.data.msg);
+                } else {
+                  Toast.showToast('error', 'Could not load careers', response.data.data);
+                }
+              });
+          }, function (response) {
+            $scope.saving = false;
+            if(response.data.msg != '') {
+              Toast.showToast('error', response.data.msg);
+            } else {
+              Toast.showToast('error', 'Error saving content for position', response.data.data);
+            }
+          });
+          break;
+        case 'order':
+          $scope.saving = true;
+          $api.saveCareerOrder($scope.careers).then(function (response) {
+                $timeout(function() {
+                  $scope.saving = false;
+                  $scope.careers = [];
+                  angular.forEach(response.data.data, function (value, key) {
+                    $scope.careers[key] = value;
+                  });
+                
+                  Toast.showToast('success', 'Successfully saved career order');
+                }, 1000);
+          }, function (response) {
+            $scope.saving = false;
+            if(response.data.msg != '') {
+              Toast.showToast('error', response.data.msg);
+            } else {
+              Toast.showToast('error', 'Error saving career order', response.data.data);
+            }
+          });
+          break;
+        default:
+        Toast.showToast('error', 'Error saving changes');
+      }
+    }
+
+    /* 
+    * Page event handlers
+    */
+   $scope.createPosition = function() {
+    $mdDialog.show({
+      controller: 'dialogCareersCtrl',
+      templateUrl: 'create_position.tmpl.html',
+      parent: angular.element(document.body),
+      clickOutsideToClose: true,
+      scope: $scope,
+      preserveScope: true,
+      fullscreen: true
+    });
+  }
+
+  $scope.deletePosition = function() {
+    $mdDialog.show({
+      controller: 'dialogCareersCtrl',
+      templateUrl: 'delete_position.tmpl.html',
+      parent: angular.element(document.body),
+      clickOutsideToClose: true,
+      scope: $scope,
+      preserveScope: true,
+      fullscreen: true
+    });
+  }
+
+      /*
+    * Tab handing
+    */
+   $scope.onTabChanges = function(currentTab){
+    $scope.activeTab = currentTab;
+  };
+
+  // Utilities
+
+  $scope.onUpdate = function($evt) {
+    angular.forEach($scope.careers, function(value, key) {
+      value.order = (key + 1);
+    });
+  }
+
+  $scope.onStart = function($evt) {
+    $scope.onUpdate();
+  }
+
+  $scope.sortableConf = {
+    animation: 200,
+    // forceFallback: true,
+    onStart: $scope.onStart,
+    onMove: $scope.onMove,
+    onUpdate: $scope.onUpdate,
+  }
+    
+  }])
   .controller('ServicesCtrl', ['$scope', '$mdDialog', 'Upload', '$timeout', 'Toast', 'API', function ($scope, $mdDialog, Upload, $timeout, Toast, $api) {
     $scope.activeService = null;
     $scope.services = [];
@@ -1512,6 +1767,63 @@ angular
         if(typeof newVal === 'undefined' || newVal === null) return;
         $scope.projectRenamed.urlPreview = "/project/" + newVal.split(" ").join("-") + "/";
       });
+  }])
+  .controller('dialogCareersCtrl', ['$scope', '$mdDialog', 'Upload', '$timeout', 'Toast', 'API', function ($scope, $mdDialog, Upload, $timeout, Toast, $api) {
+    $scope.working = false;
+
+    $scope.createSubmit = function() {
+      if($scope.createPositionForm.$valid) {
+        $scope.working = true;
+        $api.createPosition($scope.newPosition.name).then(function (response) {
+          $timeout(function() {
+            $scope.working = false;
+            $scope.careers = [];
+            angular.forEach(response.data.data, function (value, key) {
+              $scope.careers[parseInt(value.id)] = value;
+            });
+            Toast.showToast('success', 'Successfully created career: ' + $scope.newPosition.name);
+            $scope.newPosition.name = '';
+            $mdDialog.hide();
+          }, 500);
+        }, function (response) {
+          $scope.working = false;
+          if(response.data.msg != '') {
+            Toast.showToast('error', response.data.msg);
+          } else {
+            Toast.showToast('error', 'Error creating new position', response.data.data);
+          }
+        });
+      } else {
+        Toast.showToast('error', 'You must enter a position title');
+      }
+    }
+
+    $scope.deleteSubmit = function() {
+      if($scope.deletePostionForm.$valid) {
+        $scope.working = true;
+        $api.deletePosition($scope.delete).then(function (response) {
+          $timeout(function() {
+            $scope.working = false;
+            $scope.careers = [];
+            angular.forEach(response.data.data, function (value, key) {
+              $scope.careers[parseInt(value.id)] = value;
+            });
+            Toast.showToast('success', 'Successfully deleted position: ' + $scope.delete);
+            $scope.delete = '';
+            $mdDialog.hide();
+          }, 500);
+        }, function (response) {
+          $scope.working = false;
+          if(response.data.msg != '') {
+            Toast.showToast('error', response.data.msg);
+          } else {
+            Toast.showToast('error', 'Error deleting position', response.data.data);
+          }
+        });
+      } else {
+        Toast.showToast('error', 'You must enter a position name');
+      }
+    }
   }])
   .controller('UploadCtrl', function ($scope, $mdDialog, Upload, $timeout, Toast) {
       

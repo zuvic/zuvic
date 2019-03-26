@@ -36,6 +36,7 @@ try {
   require_once(__DIR__ . '/../../settings.inc');
   require_once(__DIR__ . '/services.php');
   require_once(__DIR__ . '/projects.php');
+  require_once(__DIR__ . '/careers.php');
   require_once(__DIR__ . '/common.php');
 } catch (Exception $e) {
   http_response_code(500);
@@ -265,6 +266,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             break;
           }
+      case "careers":
+        if($data['method'] == 'list') {
+          http_response_code(200);
+          $response['data'] = getCareers($db);
+          break;
+        } else if($data['method'] == 'get_position' && isset($data['id'])) {
+          http_response_code(200);
+          $response['data'] = getCareerPosition($db, $data['id']);
+          break;
+        } else if($data['method'] == 'create_position' && isset($data['name'])) {
+          http_response_code(200);
+          if (createPosition($db, $data['name']) === true) {
+            $response['data'] = getCareers($db);
+          }
+          break;
+        } else if($data['method'] == 'delete_position' && isset($data['name'])) {
+          http_response_code(200);
+          if (deletePosition($db, $data['name']) === true) {
+            $response['data'] = getCareers($db);
+          }
+          break;
+        } else if($data['method'] == 'save_content' && isset($data['id']) && isset($data['content'])) {
+          http_response_code(200);
+          if (savePositionContent($db, $data['id'], $data['content']) === true) {
+            $response['data'] = getCareerPosition($db, $data['id']);
+          }
+          break;
+        } else if($data['method'] == 'save_order' && isset($data['order'])) {
+          http_response_code(200);
+          if (saveCareerOrder($db, $data['order']) === true) {
+            $response['data'] = getCareers($db);
+          }
+          break;
+        }
       case "related":
         if($data['method'] == 'list') {
           http_response_code(200);

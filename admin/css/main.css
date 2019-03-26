@@ -217,6 +217,10 @@ md-menu-item .md-button.active:hover {
   background: rgb(17, 134, 228);
 }
 
+md-switch[disabled] .md-label {
+  color: #9b9b9b;
+}
+
 .md-subheader {
   top: -2px !important;
   z-index: 30 !important;
