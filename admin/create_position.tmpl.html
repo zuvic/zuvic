@@ -1,0 +1,36 @@
+<md-dialog class="login-dialog">
+    <md-toolbar>
+      <div class="md-toolbar-tools" layout="row" layout-align="center center">
+        <h3 ng-show="!working">Create a Position</h3>
+        <md-progress-circular class="md-hue-1" ng-show="working" md-theme="progressTheme" md-diameter="20px"></md-progress-circular>
+        <!-- <span flex></span> -->
+      </div>
+    </md-toolbar>
+
+    <div ng-class="{'active': !working }" class="fields">
+      <md-dialog-content>
+        <form name="createPositionForm">
+        <div class="md-dialog-content" layout="column">
+            <div class="md-block">
+                Choose a position title
+            </div>
+          <div class="md-block">
+            <md-input-container eopd-enter="createSubmit()" class="md-block">
+              <label>Title</label>
+              <input required name="name" ng-model="newPosition.name">
+              <div ng-messages="createPositionForm.name.$error">
+                <div ng-message-exp="['required']">You must enter a position title</div>
+              </div>
+            </md-input-container>
+          </div>
+        </div>
+        </form>
+      </md-dialog-content>
+
+      <md-dialog-actions ng-class="{'active': !working }" class="fields" layout="row" layout-align="center center">
+        <md-button class="md-raised md-primary" eopd-enter="createSubmit()" ng-click="createSubmit()" layout="row" layout-align="center center">
+          <span>submit</span>
+        </md-button>
+      </md-dialog-actions>
+    </div>
+</md-dialog>

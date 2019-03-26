@@ -1,0 +1,36 @@
+<md-dialog class="login-dialog">
+    <md-toolbar>
+      <div class="md-toolbar-tools" layout="row" layout-align="center center">
+        <h3 ng-show="!working">Delete a Position</h3>
+        <md-progress-circular class="md-hue-1" ng-show="working" md-theme="progressTheme" md-diameter="20px"></md-progress-circular>
+        <!-- <span flex></span> -->
+      </div>
+    </md-toolbar>
+
+    <div ng-class="{'active': !working }" class="fields">
+      <md-dialog-content>
+        <form name="deletePostionForm">
+        <div class="md-dialog-content" layout="column">
+            <div class="md-block">
+                For security purposes, you must type the name of the position exactly how it appears
+            </div>
+          <div class="md-block">
+            <md-input-container eopd-enter="deleteSubmit()" class="md-block">
+              <label>Name</label>
+              <input required name="delete" ng-model="delete">
+              <div ng-messages="deletePostionForm.delete.$error">
+                <div ng-message-exp="['required']">You must enter a position name</div>
+              </div>
+            </md-input-container>
+          </div>
+        </div>
+        </form>
+      </md-dialog-content>
+
+      <md-dialog-actions ng-class="{'active': !working }" class="fields" layout="row" layout-align="center center">
+        <md-button class="md-raised md-primary" eopd-enter="deleteSubmit()" ng-click="deleteSubmit()" layout="row" layout-align="center center">
+          <span>submit</span>
+        </md-button>
+      </md-dialog-actions>
+    </div>
+</md-dialog>
