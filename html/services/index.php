@@ -100,7 +100,7 @@ $service_projects = getServiceProjects($db, $service_id);
         </div>
     </div>
 
-    <div class="row banner" style="background-image: url(/images/services_<?php echo $service_name; ?>.jpg);">
+    <div class="row banner" style="background-image: url(/images/services_<?php echo strtolower($service_name); ?>.jpg);">
         <div class="inner-wrapper">
             <div class="text-wrapper">
                 <div class="title">
