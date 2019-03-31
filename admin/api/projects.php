@@ -483,8 +483,10 @@ function getRelatedProjects(PDO $db, String $id) {
     if($val !== true) continue;
     $key = preg_replace('/\{|\}/', '', json_encode([$related_cat_id => $val]));
 
-    $project_key .= "pr.project_related_key LIKE '%" . $key . "%' OR ";
+    $project_key .= "pr.project_related_key LIKE '%" . $key . "%' AND ";
   }
+
+  $project_key .= "pr.project_related_key LIKE '%:true%' AND ";
 
   try {
     $project_query = $db->prepare(sprintf(<<<SQL
@@ -497,7 +499,7 @@ ON pr.project_related_site_id = p.project_site_id
 WHERE %s
 LIMIT 8
 SQL
-, preg_replace('/\sOR\s$/', '', $project_key)));
+, preg_replace('/\sAND\s$/', '', $project_key)));
 
     $success = $project_query->execute([$id]);
   
