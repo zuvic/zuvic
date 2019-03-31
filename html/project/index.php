@@ -58,7 +58,7 @@ try {
   echo "Error: " . $e;
 }
 
-$related_projects = getRelatedProjects($db, $project_site_id, 8);
+$related_projects = getRelatedProjects($db, $project_site_id);
 
 try {
     $query = $db->prepare(<<<SQL

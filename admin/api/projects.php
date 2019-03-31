@@ -468,7 +468,7 @@ function deleteImage($db, $filename, $projectID) {
   return $success;
 }
 
-function getRelatedProjects(PDO $db, String $id) {
+function getRelatedProjects(PDO $db, String $id, Array $exclude_ids = [], Int $limit = 8) {
   global $response;
 
   $project_related = getProjectRelated($db, $id);
@@ -497,14 +497,15 @@ LEFT JOIN project_site p
 ON pr.project_related_site_id = p.project_site_id
 
 WHERE %s
-LIMIT 8
+LIMIT ?
 SQL
 , preg_replace('/\sAND\s$/', '', $project_key)));
 
-    $success = $project_query->execute([$id]);
+    $success = $project_query->execute([$limit]);
   
     if($success) {
       while($row = $project_query->fetch(PDO::FETCH_ASSOC)) {
+          if(in_array($row['project_site_id'], $exclude_ids) || $row['project_site_id'] == $id) continue;
           $related_projects[] = array('name' => $row['project_site_name'], 'id' => $row['project_site_id']);
       }
     }
