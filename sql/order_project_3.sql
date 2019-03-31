@@ -1,0 +1,1 @@
+ALTER TABLE order_project DROP PRIMARY KEY, ADD PRIMARY KEY(order_project_id, order_project_site_id, order_project_type, order_project_key);
