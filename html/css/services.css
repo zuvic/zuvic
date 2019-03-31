@@ -5,6 +5,10 @@
   line-height: 108px;
 }
 
+.row.banner .title.site-civil, .row.banner .title.permitting {
+  color: #021327d4;
+}
+
 .row.banner {
   height: 300px;
 }

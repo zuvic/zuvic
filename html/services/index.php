@@ -49,7 +49,7 @@ $service_projects = getServiceProjects($db, $service_id);
 <head>
     <meta charset="utf-8">
 
-    <title>Zuvic Services - <? echo $service_name; ?></title>
+    <title>Zuvic Services - <?php echo $service_name; ?></title>
     <meta name="description" content="Zuvic">
     <meta name="author" content="Michael Zapatka">
     <link rel="icon" type="image/svg" href="/images/favicon.svg?v=2">
@@ -103,7 +103,7 @@ $service_projects = getServiceProjects($db, $service_id);
     <div class="row banner" style="background-image: url(/images/services_<?php echo strtolower($service_name); ?>.jpg);">
         <div class="inner-wrapper">
             <div class="text-wrapper">
-                <div class="title">
+                <div class="title <?php echo strtolower($service_name); ?>">
                     <?php echo $service_name; ?>
                     <br>
                     SERVICES
