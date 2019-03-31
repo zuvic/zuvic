@@ -8,7 +8,6 @@ function getProjectRelated(PDO $db, String $id) {
   try {
     $service_query = $db->prepare(<<<SQL
 Select * from project_related where project_related_site_id = ?
-LIMIT 8
 SQL
 );
     $success = $service_query->execute(array($id));
@@ -496,6 +495,7 @@ LEFT JOIN project_site p
 ON pr.project_related_site_id = p.project_site_id
 
 WHERE %s
+LIMIT 8
 SQL
 , preg_replace('/\sOR\s$/', '', $project_key)));
 
