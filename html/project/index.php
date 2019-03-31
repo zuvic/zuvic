@@ -61,7 +61,11 @@ try {
 $related_projects = getRelatedProjects($db, $project_site_id);
 
 try {
-    $query = $db->prepare('Select * from project_content where project_content_site_id=?');
+    $query = $db->prepare(<<<SQL
+        Select * from project_content where project_content_site_id=? 
+        limit 8
+SQL
+);
     $query->execute(array($project_site_id));
   
     while($row=$query->fetch(PDO::FETCH_ASSOC)) {
