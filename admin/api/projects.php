@@ -468,7 +468,7 @@ function deleteImage($db, $filename, $projectID) {
   return $success;
 }
 
-function getRelatedProjects(PDO $db, String $id, Array $exclude_ids = [], Int $limit = 8) {
+function getRelatedProjects(PDO $db, String $id, Array $exclude_ids = [], Int $limit = 99999999) {
   global $response;
 
   $project_related = getProjectRelated($db, $id);
