@@ -8,6 +8,7 @@ function getProjectRelated(PDO $db, String $id) {
   try {
     $service_query = $db->prepare(<<<SQL
 Select * from project_related where project_related_site_id = ?
+LIMIT 8
 SQL
 );
     $success = $service_query->execute(array($id));
