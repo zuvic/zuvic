@@ -490,18 +490,21 @@ function getRelatedProjects(PDO $db, String $id, Array $exclude_ids = [], Int $l
 
   try {
     $project_query = $db->prepare(sprintf(<<<SQL
-SELECT p.project_site_name AS `project_site_name`, pr.project_related_site_id AS project_site_id
+SELECT * FROM
+(SELECT p.project_site_name AS `project_site_name`, pr.project_related_site_id AS project_site_id
 FROM project_related pr
 
-LEFT JOIN project_site p
+INNER JOIN project_site p
 ON pr.project_related_site_id = p.project_site_id
 
-WHERE %s
-LIMIT ?
+WHERE %s) r
+ORDER BY RAND()
+LIMIT :limit
 SQL
 , preg_replace('/\sAND\s$/', '', $project_key)));
 
-    $success = $project_query->execute([$limit]);
+    $project_query->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+    $success = $project_query->execute();
   
     if($success) {
       while($row = $project_query->fetch(PDO::FETCH_ASSOC)) {

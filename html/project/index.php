@@ -218,8 +218,7 @@ HTML;
             <div class="title-caption">
                 Related Projects
             </div>
-            <?php 
-                shuffle($related_projects);
+            <?php
 
                 foreach($related_projects as $related_key => $related) {
                     $url = '/project/' . implode('-', explode(' ', $related['name'])) . '/';
