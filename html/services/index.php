@@ -33,6 +33,7 @@ try {
   
     while($row=$query->fetch(PDO::FETCH_ASSOC)) {
       $service_id = $row['services_site_id'];
+      $service_name = $row['services_site_name'];
     }
 } catch (PDOException  $e ) {
   echo "Error: " . $e;
@@ -103,7 +104,7 @@ $service_projects = getServiceProjects($db, $service_id);
         <div class="inner-wrapper">
             <div class="text-wrapper">
                 <div class="title">
-                    <?php echo strtoupper($service_name); ?>
+                    <?php echo $service_name; ?>
                     <br>
                     SERVICES
                 </div>
