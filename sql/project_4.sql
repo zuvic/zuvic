@@ -1,0 +1,1 @@
+ALTER TABLE project_site MODIFY COLUMN project_site_name VARCHAR(100) NOT NULL;
