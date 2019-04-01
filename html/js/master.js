@@ -89,6 +89,7 @@ $(document).ready(function() {
 
   // Home Page services slider
   $('.row.slider .slide').on('mouseover', function(e) {
+      if(isMobileDevice.any()) return;
       var $this = $(this);
       var thisIndex = $this.index();
       var $caption = $('.row.slider .sub-caption .text');

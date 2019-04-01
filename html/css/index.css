@@ -444,4 +444,9 @@
     justify-content: center;
   }
 
+  #contact-section .header {
+    padding-right: 0;
+    padding-bottom: 20px;
+  }
+
 }
