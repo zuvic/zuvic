@@ -8,6 +8,7 @@
     <title>Zuvic | About Us</title>
     <meta name="description" content="Zuvic">
     <meta name="author" content="Michael Zapatka">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg" href="/images/favicon.svg?v=2">
 
     <link rel="stylesheet" href="/css/masterPage.css">
@@ -301,23 +302,6 @@
             margin: 10px 0 0 0;
             height: 30px;
         }
-
-        #contact-button {
-            text-transform: uppercase;
-            font-size: 12px;
-            background: var(--blue);
-            color: #fff;
-            padding: 5px 14px;
-            border-radius: 3px;
-            cursor: pointer;
-            right: 40px;
-            position: absolute;
-            transition: all 0.1s ease-in-out;
-            -webkit-transition: all 0.1s ease-in-out;
-            -moz-transition: all 0.1s ease-in-out;
-            -o-transition: all 0.1s ease-in-out;
-        }
-
         .grid-element-1 {
             height: 200px;
             display: inline-block;
@@ -517,34 +501,60 @@
 
 <body>
     <!-- Nav -->
-    <div class="nav fixed">
+    <div class="nav">
+            <span class="navTrigger">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+            </span>
             <div class="navwrapper">
                 <div class="links" id="logo_wrapper">
-                    <a href="/"><img class="logo" src="/images/logo_vector.svg">
+                    <a href="/">
+                        <img class="logo" src="/images/logo_vector.svg">
                         </img>
                         <img class="logo_small" src="/images/logo_vector_small.svg">
                         </img>
                     </a>
                 </div>
                 <div class="menu">
-                    <!-- <div class="links service-link"><a href="./services.html">Services</a>
-                        <div class="underline"></div>
-                    </div> -->
-                    <div class="links"><a href="/#servicesnav">Services</a>
+                    <div class="links">
+                        <a href="/#servicesnav">Services</a>
                         <div class="underline"></div>
                     </div>
-                    <!-- <div class="links"><a href="/news/">News</a>
+                    <!-- <div class="links">
+                        <a href="/news/">News</a>
                         <div class="underline"></div>
                     </div> -->
-                    <div class="links"><a href="/careers/">Careers</a>
+                    <div class="links">
+                        <a href="/careers/">Careers</a>
                         <div class="underline"></div>
                     </div>
-                    <div class="links"><a href="/about/">About</a>
+                    <div class="links">
+                        <a href="/about/">About</a>
                         <div class="underline"></div>
                     </div>
                 </div>
-                <div id="contact-button"><a href="/contact/">Contact Us</a></div>
+                <div id="contact-button">
+                    <a href="/contact/">Contact Us</a>
+                </div>
             </div>
+        </div>
+        <div id="nav-mobile">
+                <div class="links">
+                    <a href="/#servicesnav">Services</a>
+                    <div class="underline"></div>
+                </div>
+                <div class="links">
+                    <a href="/careers/">Careers</a>
+                    <div class="underline"></div>
+                </div>
+                <div class="links">
+                    <a href="/about/">About</a>
+                    <div class="underline"></div>
+                </div>
+                <div class="links contact">
+                    <a href="/contact/">Contact Us</a>
+                </div>
         </div>
 
     <div class="remodal-bg">
@@ -559,26 +569,31 @@
                         <div class="page-sub-header">For over 30 years, Zuvic Carr has provided civil, environmental, and transportation design services throughout Connecticut and New England.</div>
                     </div>
                     <div class="mid-wrapper" style="margin-top: 256px">
-                        <div class="mid-content">
+                        <div class="mid-content full">
                             <div class="title">WHO WE ARE</div>
                             <div class="underline"></div>
                             <div class="text">
-                                Zuvic Carr is a civil and environmental engineering design firm led by Marici Zuvic, Robert Carr, Tomek Grajewski, Miroslav Grajewski, Victoria Man and Galen Semprebon.  
-                                Zuvic Carr is based in Rocky Hill, Connecticut, 10 min south of Hartford, at the state’s capital. 
+                                Zuvic Carr’s multidisciplinary approach is what makes us your primary trusted partner for all your project needs. Our ability to coordinate between disciplines and experts 
+                                for any project assures you have the most effective solutions to your needs — solutions that anticipate the potential risks and mitigating factors as the project progresses 
+                                from one phase to the next.
                                 <br><br>
-                                Our professional staff and comprehensive slate of services allows us to respond to our clients’ needs quickly while keeping the project on schedule and on budget.  
-                                Because of our size and company structure, we are able to provide customer focused and cost-effective consulting services. 
+                                Our professional staff and comprehensive slate of services allows us to respond to our clients’ needs quickly while keeping the project on schedule and on budget. Because of 
+                                our size and company structure, we are able to provide customer focused and cost-effective consulting services. This will decrease the amount of time needed to spend managing 
+                                various stakeholders, and help you focus your efforts on what matters most. No matter the project you engage us for, Zuvic Carr can promise three consistent outcomes: 
+                                complete solutions, superior responsiveness, and projects done right, on time, and on budget.
                             </div>
                         </div>
-                        <div class="mid-content">
-                            <div class="title">PHILOSOPHY</div>
+                    </div>
+                    <div class="mid-wrapper" style="margin-top: 56px">
+                        <div class="mid-content full">
+                            <div class="title">CORE VALUES</div>
                             <div class="underline"></div>
-                            <div class="text">
-                                    Our organization is passionately committed to the pursuit of a better world through positive change. 
-                                    We embrace your visions as our own and partner with you to develop better ideas that are smarter, more efficient, and innovative. 
-                                    We work closely with the communities in which we serve to ensure that our solutions optimize environmental protection, economic prosperity, social justice, and cultural vibrancy. We want their businesses, ecosystems, and communities to thrive, both now and into the future.  
-                                    Our people are passionate about our corporate purpose and values. We believe in long-term relationships with our partners, and are committed to our clients’ lasting success.
+                            <br>
+                            <div class="title" style="font-weight: 300;color: #636363;font-size: 23px;">
+                                CUSTOMER FOCUS.&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;FOLLOW THROUGH.&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;TEAM WORK.&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;CONFIDENCE.&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;INITIATIVE.
                             </div>
+                            <br>
+                            <div class="underline" style="margin-top: 0"></div>
                         </div>
                     </div>
                     <div class="mid-wrapper">
@@ -586,10 +601,7 @@
                             <div class="title">PRINCIPALS</div>
                             <div class="underline" style="width:30%"></div>
                             <div class="text" style="width: 91%">
-                                Zuvic Carr understands that combining technical skill and innovative thinking with thorough project research and planning
-                                is essential for project success. We are devoted to creating the best solutions through our
-                                technical resourcefulness, our pursuit of excellence, and our responsiveness to each client's
-                                needs.
+
                             </div>
 
                             <div class="principal-wrapper">

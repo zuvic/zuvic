@@ -41,7 +41,7 @@ a {
 
 ul {
   padding-left: 20px;
-  margin: 5px 0px 0px 0px;
+  /* margin: 5px 0px 0px 0px; */
   color: var(--grey);
   font-weight: 600;
   display: inline-block;
