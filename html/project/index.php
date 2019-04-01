@@ -87,6 +87,7 @@ SQL
     <title>Zuvic</title>
     <meta name="description" content="Zuvic">
     <meta name="author" content="Michael Zapatka">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg" href="/images/favicon.svg?v=2">
 
     <link rel="stylesheet" href="/css/masterPage.css">
@@ -116,9 +117,9 @@ SQL
                     <div class="underline"></div>
                 </div>
                 <!-- <div class="links">
-                    <a href="/news/">News</a>
-                    <div class="underline"></div>
-                </div> -->
+                        <a href="/news/">News</a>
+                        <div class="underline"></div>
+                    </div> -->
                 <div class="links">
                     <a href="/careers/">Careers</a>
                     <div class="underline"></div>
@@ -237,8 +238,14 @@ HTML;
     </div>
 
     <div id="footer">
-        <img src="/images/logo_vector_white.svg">
-        <img src="/images/social.svg" style="height: 28px; top:50%; float: right; margin-right:15%">
+        <div class="top">
+            <img src="/images/logo_vector_white.svg">
+            <img class="social" src="/images/social.svg">
+        </div>
+        <div class="bottom">
+            <div>&copy; 2019 Zuvic, Carr & Associates, Inc.</div>
+            <div class="callout">Designed/Developed by Michael Zapatka: mzaptk@gmail.com</div>
+        </div>
     </div>
 
     </div>
