@@ -118,11 +118,7 @@ $service_projects = getServiceProjects($db, $service_id);
         <div class="inner-wrapper">
             <div class="column header">
                 <div class="title">
-                  FOCUS.
-                  <br>
-                  EXPRESSION.
-                  <br>
-                  CO-CREATION.
+                CUSTOMER FOCUS.<br>FOLLOW THROUGH.<br>TEAM WORK.<br>CONFIDENCE.<br>INITIATIVE.
                 </div>
                 <!-- <div class="sub-title">Full Time | Rocky Hill, CT</div> -->
                 <img src="/images/social_small.svg" style="height: 18px">
