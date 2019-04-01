@@ -8,6 +8,7 @@
     <title>Zuvic</title>
     <meta name="description" content="Zuvic">
     <meta name="author" content="Michael Zapatka">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/svg" href="images/favicon.svg?v=2">
 
     <!-- jQuery -->
@@ -22,6 +23,11 @@
 <body>
     <!-- Nav -->
     <div class="nav">
+        <span class="navTrigger">
+                <i></i>
+                <i></i>
+                <i></i>
+        </span>
         <div class="navwrapper">
             <div class="links" id="logo_wrapper">
                 <a href="/">
@@ -54,13 +60,28 @@
             </div>
         </div>
     </div>
+    <div id="nav-mobile">
+            <div class="links">
+                <a href="/#servicesnav">Services</a>
+                <div class="underline"></div>
+            </div>
+            <div class="links">
+                <a href="/careers/">Careers</a>
+                <div class="underline"></div>
+            </div>
+            <div class="links">
+                <a href="/about/">About</a>
+                <div class="underline"></div>
+            </div>
+            <div class="links contact">
+                <a href="/contact/">Contact Us</a>
+            </div>
+    </div>
 
     <div class="row banner">
         <div class="inner-wrapper">
             <div class="text-wrapper">
-                <div class="title">DESIGNING
-                    <br>SMARTER
-                    <br>SOLUTIONS</div>
+                <div class="title">DESIGNING SMARTER SOLUTIONS</div>
                 <div class="sub-title">
                     that ignite your vision.
                 </div>
@@ -180,45 +201,52 @@
             </div>
             <div class="direction-row">
                 <div class="slide">
-                    <!-- <div class="slider-overlay civil">SITE/CIVIL</div> -->
                     <a href="/services/site-civil/">
-                        <img src="images/home_slider_5.jpg" />
+                        <div class="slider-overlay">SITE/CIVIL</div>
+                        <img src="images/home_slider_5.jpg" onload="this.onload=null; this.src=getSliderImgPath(this);"/>
                     </a>
                 </div>
                 <div class="slide">
                     <a href="/services/transportation/">
-                        <img src="images/home_slider_1.jpg" />
+                        <div class="slider-overlay">TRANSPORTATION</div>
+                        <img src="images/home_slider_1.jpg" onload="this.onload=null; this.src=getSliderImgPath(this);"/>
                     </a>
                 </div>
                 <div class="slide">
                     <a href="/services/construction/">
-                        <img src="images/home_slider_6.jpg" />
+                        <div class="slider-overlay">CONSTRUCTION</div>
+                        <img src="images/home_slider_6.jpg" onload="this.onload=null; this.src=getSliderImgPath(this);"/>
                     </a>
                 </div>
                 <div class="slide">
                     <a href="/services/permitting/">
-                        <img src="images/home_slider_4.jpg" />
+                        <div class="slider-overlay">PERMITTING</div>
+                        <img src="images/home_slider_4.jpg" onload="this.onload=null; this.src=getSliderImgPath(this);"/>
                     </a>
                 </div>
                 <div class="slide">
                     <a href="/services/site-assessments/">
-                        <img src="images/home_slider_7.jpg" />
+                        <div class="slider-overlay">SITE-ASSESSMENTS</div>
+                        <img src="images/home_slider_7.jpg" onload="this.onload=null; this.src=getSliderImgPath(this);"/>
                     </a>
                 </div>
                 <div class="slide">
                     <a href="/services/remediation/">
-                        <img src="images/home_slider_3.jpg" />
+                        <div class="slider-overlay">REMEDIATION</div>
+                        <img src="images/home_slider_3.jpg" onload="this.onload=null; this.src=getSliderImgPath(this);"/>
                     </a>
                 </div>
                 <div class="slide">
                     <a href="/services/hazardous-materials/">
-                        <img src="images/home_slider_2.jpg" />
+                        <div class="slider-overlay">HAZARDOUS-MATERIALS</div>
+                        <img src="images/home_slider_2.jpg" onload="this.onload=null; this.src=getSliderImgPath(this);"/>
                     </a>
                 </div>
                 <div class="slide">
-                        <a href="/services/ast-ust/">
-                            <img src="images/home_slider_8.jpg" />
-                        </a>
+                    <a href="/services/ast-ust/">
+                        <div class="slider-overlay">ASTs/USTs</div>
+                        <img src="images/home_slider_8.jpg" onload="this.onload=null; this.src=getSliderImgPath(this);" />
+                    </a>
                 </div>
             </div>
             <div class="sub-caption">

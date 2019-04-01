@@ -1,5 +1,7 @@
 $(document).ready(function() {
   var $nav = $('.nav');
+  var $logo = $('.logo');
+  var $logo_small = $('.logo_small');
 
   var currentSlide = 0;
   var quoteIndex = 0;
@@ -21,17 +23,19 @@ $(document).ready(function() {
           var scrollTop = $(window).scrollTop();
 
           if (scrollTop <= 30) {
-              $nav.css('height', (90 - scrollTop) + 'px');
-              $('.logo').css('opacity', '1');
-              $('.logo').css('margin-top', '12px');
-              $('.logo_small').css('margin-top', '12px');
-
+                $nav.removeClass('collapsed');
+                $logo.removeClass('collapsed');
+                $logo_small.removeClass('collapsed');
+                $nav.addClass('open');
+                $logo.addClass('open');
+                $logo_small.addClass('open');
           } else {
-              $nav.css('background-color', 'rgba(255, 255, 255, 0.65)');
-              $('.logo').css('opacity', '0');
-              $('.logo').css('margin-top', '39px');
-              $('.logo_small').css('margin-top', '39px');
-              $nav.css('height', '68px'); //44
+                $nav.addClass('collapsed');
+                $logo.addClass('collapsed');
+                $logo_small.addClass('collapsed');
+                $nav.addClass('open');
+                $logo.addClass('open');
+                $logo_small.addClass('open');
           }
       }
       if (e['originalEvent']['propertyName'] == "height") {
@@ -40,7 +44,7 @@ $(document).ready(function() {
   });
 
   // Navbar link effects
-  $('.links').hover(function(e) {
+  $('.nav .links').hover(function(e) {
       $(this).css('color', 'var(--red)');
       $(this).find('.underline').css('width', '100%');
       $(this).find('.underline').css('margin-left', '0%');
@@ -58,24 +62,24 @@ $(document).ready(function() {
               var scrollTop = $(this).scrollTop();
 
               if (scrollTop <= 30) {
-                  $nav.css('height', (90 - scrollTop) + 'px');
-                  $nav.css('background-color', 'rgba(255, 255, 255, 1)');
-                  $('.logo').css('opacity', '1');
-                  $('.logo').css('margin-top', '12px');
-                  $('.logo_small').css('margin-top', '12px');
-                  $('#services-dropdown').css('top', (scrollTop + ((90 - scrollTop) / 2) + 9) + 'px');
+                  $nav.removeClass('collapsed');
+                  $logo.removeClass('collapsed');
+                  $logo_small.removeClass('collapsed');
                   $('#contact-button').removeClass('hover');
               } else {
-                  $nav.css('background-color', 'rgba(255, 255, 255, 0.65)');
-                  $('.logo').css('opacity', '0');
-                  $('.logo').css('margin-top', '39px');
-                  $('.logo_small').css('margin-top', '39px');
-                  $nav.css('height', '68px');
-                  $('#services-dropdown').css('top', (scrollTop + 43) + 'px');
+                  $nav.addClass('collapsed');
+                  $logo.addClass('collapsed');
+                  $logo_small.addClass('collapsed');
                   $('#contact-button').addClass('hover');
               }
           });
       }
+  });
+
+  // Hamburger Handler
+  $('.navTrigger').click(function () {
+    $(this).toggleClass('active');
+    $('#nav-mobile').toggleClass('active');
   });
 
   // Careers Drawer
@@ -199,3 +203,34 @@ function isScrolledIntoView(elem) {
 
   return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop) || (elemTop <= docViewTop && elemBottom >= docViewTop) || (elemTop <= docViewBottom && elemBottom >= docViewBottom));
 }
+
+function getSliderImgPath($this) {
+  var cSrc = $this.src.split(/.jpg$/);
+
+  return isMobileDevice.any() ? cSrc[0] + '_mobile.jpg' : cSrc[0] + '.jpg';
+}
+
+// Credit TwoFuckingDevelopers: https://coderwall.com/p/i817wa/one-line-function-to-detect-mobile-devices-with-javascript
+var isMobileDevice = {
+    Android: function() {
+        return navigator.userAgent.match(/Android/i);
+    },
+    BlackBerry: function() {
+        return navigator.userAgent.match(/BlackBerry/i);
+    },
+    iOS: function() {
+        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+    },
+    Opera: function() {
+        return navigator.userAgent.match(/Opera Mini/i);
+    },
+    Windows: function() {
+        return navigator.userAgent.match(/IEMobile/i);
+    },
+    any: function() {
+        return (isMobileDevice.Android() || isMobileDevice.BlackBerry() || isMobileDevice.iOS() || isMobileDevice.Opera() || isMobileDevice.Windows());
+    },
+    none: function() {
+        return (!isMobileDevice.any());
+    }
+};
