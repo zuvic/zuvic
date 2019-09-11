@@ -8,6 +8,7 @@ require_once(__DIR__ . '/../settings.inc');
 global $settings;
 
 ?>
+<!DOCTYPE html>
 <html lang="en" ng-app="AngularCMS">
 
 <head>
