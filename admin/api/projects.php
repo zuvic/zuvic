@@ -422,6 +422,11 @@ function uploadImage($db, $newFiles, $projectID) {
 
     if(updateProjectImages($db, $projectID, count($images) + 1)) {
       $success = move_uploaded_file( $newFiles['tmp_name'][$idx],  $settings['image_path'] . $projectID . '/' . (count($images) + 1) . '.' . strtolower(pathinfo($name, PATHINFO_EXTENSION)));
+      if(!$success) {
+        updateProjectImages($db, $projectID, count($images));
+      }
+    } else {
+      $success = false;
     }
 
     if(!$success) {
