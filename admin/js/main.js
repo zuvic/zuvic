@@ -1875,7 +1875,7 @@ angular
             $scope.timeStamp = new Date().getTime();
             $scope.pendingUploads[idx] = 100
           }, 500);
-        }, function (resp) {
+        }, function (response) {
           $timeout(function () {
             $scope.uploading = false;
             $scope.hide();
@@ -1898,21 +1898,15 @@ angular
       $scope.uploadMultiple = function (files) {
         console.log($scope.pendingUploads, $scope.projectContent.photos);
         if (files && files.length) {
-          if(files.length > 1) {
-            idx = [];
-            angular.forEach(files, function (value, key) {
-              $scope.projectContent.photos.value = String(parseInt($scope.projectContent.photos.value) + 1);
-              idx.push(parseInt($scope.projectContent.photos.value));
-              $scope.pendingUploads[parseInt($scope.projectContent.photos.value)] = 0
-            });
-            angular.forEach(files, function (file, key) {
-              $scope.upload(file, idx[key]);
-            });
-          } else {
+          idx = [];
+          angular.forEach(files, function (value, key) {
             $scope.projectContent.photos.value = String(parseInt($scope.projectContent.photos.value) + 1);
+            idx.push(parseInt($scope.projectContent.photos.value));
             $scope.pendingUploads[parseInt($scope.projectContent.photos.value)] = 0
-            $scope.upload(files, parseInt($scope.projectContent.photos.value));
-          }
+          });
+          angular.forEach(files, function (file, key) {
+            $scope.upload(file, idx[key]);
+          });
         }
         console.log($scope.pendingUploads, parseInt($scope.projectContent.photos.value));
       }

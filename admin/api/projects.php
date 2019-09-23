@@ -11,7 +11,7 @@ Select * from project_related where project_related_site_id = ?
 SQL
 );
     $success = $service_query->execute(array($id));
-  
+
     if($success) {
       while($row=$service_query->fetch(PDO::FETCH_ASSOC)) {
         $related_cats = json_decode($row['project_related_key'], true);
@@ -36,7 +36,7 @@ function getProjectInfo(PDO $db) {
   try {
     $query = $db->prepare('Select project_site_name, project_site_id from project_site');
     $query->execute();
-  
+
     while($row = $query->fetch(PDO::FETCH_ASSOC)) {
       $project_info[] = array('id' => $row['project_site_id'], 'name' => $row['project_site_name']);
     }
@@ -49,7 +49,7 @@ function getProjectInfo(PDO $db) {
 }
 
 function getProjectContent(PDO $db, String $id) {
-  $project_content = array( 
+  $project_content = array(
     'challenges' => array(),
     'highlights' => array(),
     'solutions' => array(),
@@ -61,7 +61,7 @@ function getProjectContent(PDO $db, String $id) {
   try {
     $query = $db->prepare('Select * from project_content where project_content_site_id = ?');
     $query->execute(array($id));
-  
+
     while($row = $query->fetch(PDO::FETCH_ASSOC)) {
       switch ($row['project_content_type']) {
         case "sub-title":
@@ -239,7 +239,7 @@ function saveProjectContent(PDO $db, String $id, Array $content) {
         $highlight['id'],
         $highlight['value'],
         $highlight['value']));
-    } 
+    }
 
     $title_query = $db->prepare('INSERT INTO project_content (project_content_site_id, project_content_type, project_content_id, project_content_value) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE project_content_value = ?');
     $title_query->execute(array(
@@ -247,7 +247,7 @@ function saveProjectContent(PDO $db, String $id, Array $content) {
       'title',
       isset($content['title']['id']) ? $content['title']['id'] : null,
       $content['title']['value'],
-      $content['title']['value'])); 
+      $content['title']['value']));
 
     $sub_query = $db->prepare('INSERT INTO project_content (project_content_site_id, project_content_type, project_content_id, project_content_value) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE project_content_value = ?');
     $sub_query->execute(array(
@@ -255,7 +255,7 @@ function saveProjectContent(PDO $db, String $id, Array $content) {
       'sub-title',
       isset($content['subtitle']['id']) ? $content['subtitle']['id'] : null,
       $content['subtitle']['value'],
-      $content['subtitle']['value']));  
+      $content['subtitle']['value']));
 
     $pho_query = $db->prepare('INSERT INTO project_content (project_content_site_id, project_content_type, project_content_id, project_content_value) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE project_content_value = ?');
     $pho_query->execute(array(
@@ -272,7 +272,7 @@ function saveProjectContent(PDO $db, String $id, Array $content) {
     http_response_code(500);
     die("Error: " . $e);
   }
-  
+
   return true;
 }
 
@@ -283,7 +283,7 @@ function saveProjectRelated(PDO $db, String $id, Array $related) {
 
   try {
     $rel_query = $db->prepare(<<<SQL
-INSERT INTO project_related (project_related_id, project_related_site_id, project_related_key) VALUES (?,?,?) 
+INSERT INTO project_related (project_related_id, project_related_site_id, project_related_key) VALUES (?,?,?)
 ON DUPLICATE KEY UPDATE project_related_key = ?
 SQL
 );
@@ -298,7 +298,7 @@ SQL
     http_response_code(500);
     die("Error: " . $e);
   }
-  
+
   return $success;
 }
 
@@ -346,7 +346,7 @@ function deleteProjectContent(PDO $db, String $id) {
     http_response_code(500);
     die("Error: " . $e);
   }
-  
+
   return true;
 }
 
@@ -376,7 +376,7 @@ function updateImages($db, $order, $projectID) {
     $path = pathinfo($image);
     $old_files[$idx] = $settings['image_path'] . $projectID . '/' . $path['filename'] . '_tmp' . '.jpg';
     $success = copy($settings['image_path'] . $projectID . '/' . $image, $settings['image_path'] . $projectID . '/' . $path['filename'] . '_tmp' . '.jpg');
-    
+
     if(!$success) {
       http_response_code(500);
       die('Error updating project order');
@@ -400,39 +400,37 @@ function uploadImage($db, $newFiles, $projectID) {
   global $response;
   $success = true;
 
-  foreach($newFiles['name'] as $idx => $name) {
-    $files = [];
+  $files = [];
 
-    if (!file_exists($settings['image_path'] . $projectID . '/')) {
-        mkdir($settings['image_path'] . $projectID . '/', 0777);
-    }
+  if (!file_exists($settings['image_path'] . $projectID . '/')) {
+      mkdir($settings['image_path'] . $projectID . '/', 0777);
+  }
 
-    if ($handle = opendir($settings['image_path'] . $projectID . '/')) {
+  if ($handle = opendir($settings['image_path'] . $projectID . '/')) {
 
-      while (false !== ($entry = readdir($handle))) {
-        if($entry!== '.' && $entry !== '..') {
-          $files[] = $entry;
-        }
+    while (false !== ($entry = readdir($handle))) {
+      if($entry!== '.' && $entry !== '..') {
+        $files[] = $entry;
       }
-  
-      closedir($handle);
     }
 
-    $images = preg_grep('/\.jpg$/i', $files);
+    closedir($handle);
+  }
 
-    if(updateProjectImages($db, $projectID, count($images) + 1)) {
-      $success = move_uploaded_file( $newFiles['tmp_name'][$idx],  $settings['image_path'] . $projectID . '/' . (count($images) + 1) . '.' . strtolower(pathinfo($name, PATHINFO_EXTENSION)));
-      if(!$success) {
-        updateProjectImages($db, $projectID, count($images));
-      }
-    } else {
-      $success = false;
-    }
+  $images = preg_grep('/\.jpg$/i', $files);
 
+  if(updateProjectImages($db, $projectID, count($images) + 1)) {
+    $success = move_uploaded_file( $newFiles['tmp_name'],  $settings['image_path'] . $projectID . '/' . (count($images) + 1) . '.' . strtolower(pathinfo($newFiles['name'], PATHINFO_EXTENSION)));
     if(!$success) {
-      http_response_code(500);
-      $response['msg'] = 'Error uploading project photo: ' . $name;
+      updateProjectImages($db, $projectID, count($images));
     }
+  } else {
+    $success = false;
+  }
+
+  if(!$success) {
+    http_response_code(500);
+    $response['msg'] = 'Error uploading project photo: ' . $name;
   }
 
   return $success;
@@ -510,7 +508,7 @@ SQL
 
     $project_query->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
     $success = $project_query->execute();
-  
+
     if($success) {
       while($row = $project_query->fetch(PDO::FETCH_ASSOC)) {
           if(in_array($row['project_site_id'], $exclude_ids) || $row['project_site_id'] == $id) continue;
