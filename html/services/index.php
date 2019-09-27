@@ -7,7 +7,7 @@ global $db_settings;
 
 preg_match('/(?:services)(.*$)/', $_SERVER['REQUEST_URI'], $url);
 
-$url = preg_replace(array('/services\//', '/\//'), '', $url);
+$url = preg_replace(array('/services\//', '/\//'), '', preg_replace(array('/\%20/'), ' ', $url));
 
 $service_name = $url[0];
 $service_id = null;
@@ -100,7 +100,7 @@ $service_projects = getServiceProjects($db, $service_id);
         </div>
     </div>
 
-    <div class="row banner" style="background-image: url(/images/services_<?php echo strtolower($service_name); ?>.jpg);">
+    <div class="row banner" style="background-image: url(/images/services_<?php echo preg_replace(array('/\s/'), '\ ', strtolower($service_name)); ?>.jpg);">
         <div class="inner-wrapper">
             <div class="text-wrapper">
                 <div class="title <?php echo strtolower($service_name); ?>">
