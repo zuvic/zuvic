@@ -121,7 +121,7 @@ $service_projects = getServiceProjects($db, $service_id);
                 CUSTOMER FOCUS.<br>FOLLOW THROUGH.<br>TEAM WORK.<br>CONFIDENCE.<br>INITIATIVE.
                 </div>
                 <!-- <div class="sub-title">Full Time | Rocky Hill, CT</div> -->
-                <img src="/images/social_small.svg" style="height: 18px">
+                <img src="/images/social_small.svg" style="height: 18px" usemap="#social_map">
             </div>
             <div class="column content">
                 <?php 
@@ -160,5 +160,8 @@ $service_projects = getServiceProjects($db, $service_id);
     </div>
 
 </body>
-
+<map name="social_map">
+    <area shape="rect" coords="0,0,30,18" alt="Mail" href="mailto:info@zuvic.com" target="_blank">
+    <area shape="rect" coords="30,0,60,18" alt="LinkedIn" href="https://www.linkedin.com/company/zuvic-carr/" target="_blank">
+</map>
 </html>
