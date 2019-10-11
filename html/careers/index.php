@@ -126,7 +126,7 @@ SQL
                             <div class="drawer">{$content['desc_extra']}
                             </div>
                             <div class="job-apply">
-                                <input type="button" value="Apply">
+                                <input type="button" value="Apply" onclick="location.href='mailto:info@zuvic.com?subject=Re: Zuvic Job Posting - {$content['title']}';">
                             </div>
                         </div>
                     </div>
