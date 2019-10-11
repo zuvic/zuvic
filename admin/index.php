@@ -97,8 +97,3 @@ global $settings;
 </body>
 
 </html>
-
-<!--
-Copyright 2016-2018 Google Inc. All Rights Reserved. 
-Use of this source code is governed by an MIT-style license that can be found in the LICENSE file at https://material.angularjs.org/latest/license.
--->
