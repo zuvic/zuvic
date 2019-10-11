@@ -116,7 +116,6 @@ SQL
                 <div class="row job">
                     <div class="inner-wrapper">
                         <div class="column header">
-                            <img src="/images/social_small.svg" style="height: 18px">
                             <div class="title">{$content['title']}</div>
                             <div class="sub-title">{$content['duration']} | {$content['location']}</div>
                         </div>
@@ -125,6 +124,9 @@ SQL
                             <div class="sub-title">{$content['description']}</div>
                             <div class="drawer-button">Read More ></div>
                             <div class="drawer">{$content['desc_extra']}
+                            </div>
+                            <div class="job-apply">
+                                <input type="button" value="Apply">
                             </div>
                         </div>
                     </div>

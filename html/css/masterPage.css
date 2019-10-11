@@ -153,6 +153,7 @@ li {
   display: flex;
   padding: 5px 26px;
   border-radius: 3px;
+  border: 1px solid var(--blue);
   -webkit-transition: all 0.1s;
   -moz-transition: all 0.1s;
   -o-transition: all 0.1s;

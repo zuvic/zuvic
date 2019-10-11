@@ -56,3 +56,33 @@
   font-family: 'Roboto';
   margin: 5px 10px;
 }
+
+.row.job .job-apply {
+  display: flex;
+  justify-content: center;
+}
+
+.row.job .job-apply input[type="button"] {
+  width: 140px;
+  height: 40px;
+  border-radius: 5px;
+  color: #fff;
+  background: var(--blue);
+  font-family: 'Roboto';
+  border: 1px solid var(--blue);
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  -webkit-transition: all 0.1s ease-in-out;
+  -moz-transition: all 0.1s ease-in-out;
+  -o-transition: all 0.1s ease-in-out;
+  transition-timing-function: ease-in-out;
+}
+
+.row.job .job-apply input[type="button"]:hover {
+  color:var(--blue);
+  border: 1px solid var(--blue);
+  background: #fff;
+}
