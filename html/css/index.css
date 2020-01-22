@@ -247,6 +247,10 @@
   margin: 30px 0;
 }
 
+#servicesnav .direction-row {
+  overflow: hidden;
+}
+
 .row.slider .slide {
   width: 80px;
   display: flex;
